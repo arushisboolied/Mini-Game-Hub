@@ -20,17 +20,20 @@ import random
     8.
 """
 class Game:
-    def __init__(self,players,Resolution=(1280,720),Theme="medieval",Characters=(1,2)):
+    def __init__(self,players=(0,0),Resolution=(1280,720),Theme="medieval",Characters=(1,2)):
         pygame.init()
         pygame.font.init()
         self.players=players
-        self.Board=[]
         self.Resolution=Resolution
         self.Theme=Theme
         self.Characters=Characters
         self.screen=pygame.display.set_mode(Resolution)
         self.current_player=0
         self.clock=pygame.time.Clock()
+        self.current_move=[-1,-1]
+        bg=pygame.image.load("hub/Assets/Images/Background1.jpg").convert()
+        bg=pygame.transform.scale(bg,Resolution)
+        self.screen.blit(bg)
 
     def win_check(self):
         pass
@@ -67,24 +70,18 @@ class Game:
             for event in pygame.event.get():
                 if event.type==pygame.QUIT:
                     running=False
-                    Menu.run()
+                    sys.exit()
                 else:
                     self.event_handler(event)
-
-            self.update_board()
             pygame.display.update()
 
             if self.win_check():
                 running=False
-                Scoreboard.run()
             else:
                 self.switch_turns()
 
 
-if __name__=="__main__":
-    print("OK")
-elif __name__=="__main2__":
-    print("yes")   
+Game().run()
 
             
 
