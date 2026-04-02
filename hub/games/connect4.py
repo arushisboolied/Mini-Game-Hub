@@ -8,70 +8,8 @@ import pathlib
 import subprocess
 import datetime
 import random
-"""442 209
-498 211
-554 213
-611 213
-670 213
-722 214
-778 215
-836 214
-442 520"""
-class Game:
-    def __init__(self,players=(0,0),Resolution=(1280,720),Theme="medieval",Characters=(1,2)):
-        pygame.init()
-        pygame.font.init()
-        self.players=players
-        self.Resolution=Resolution
-        self.Theme=Theme
-        self.Characters=Characters
-        self.screen=pygame.display.set_mode(Resolution)
-        self.current_player=0
-        self.clock=pygame.time.Clock()
-        self.current_move=[-1,-1]
-
-    def win_check(self):
-        pass
-
-    def switch_turns(self):
-        self.current_player=(self.current_player+1)%2
-
-    def generate_board(self):
-        pass
-
-    def generate_players(self):
-        pass
-
-    def timer(self):
-        return int(pygame.time.get_ticks()//1000)
-    
-    def event_handler(self,event):
-        pass
-
-    def update_board(self):
-        pass
-
-    def run(self):
-        self.running=True
-
-        self.generate_board()
-        self.generate_players()
-        
-        while self.running:
-            
-            self.clock.tick(60)
-            self.time_elapsed=self.timer()
-
-            for event in pygame.event.get():
-                if event.type==pygame.QUIT:
-                    running=False
-                    sys.exit()
-                else:
-                    self.event_handler(event)
-            
-            pygame.display.update()
-
-            
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+from game import Game
 
 class Connect4(Game):
     def __init__(self, players=(0,0), Resolution=(1280,720), Theme="medieval", Characters=(1,2)):
@@ -98,7 +36,7 @@ class Connect4(Game):
         self.Board=np.ones(49,dtype=int).reshape(7,7)*(-1)
         image=pygame.image.load("hub/Assets/Images/Connect4.png").convert()
         image2=pygame.image.load("hub/Assets/Images/Connect4_Board.png").convert()
-        image2.set_colorkey((255,255,255))
+        image2.set_colorkey((0,0,0))
         image=pygame.transform.scale(image,self.Resolution)
         image2=pygame.transform.scale(image2,(600,600))
         self.screen.blit(image,(0,0))
@@ -111,10 +49,18 @@ class Connect4(Game):
         if empty.size > 0:
             self.Board[x, empty[-1]] = self.current_player
             self.current_move[1] = empty[-1]
-            print(self.Board)
+            if self.current_player==0:
+                coin=pygame.image.load("hub/Assets/Images/Coin1.png").convert()
+                coin.set_colorkey((0,0,0))
+                coin=pygame.transform.scale(coin,(55,50))
+                self.screen.blit(coin,(463-26.5+58.5*x,210-25+50.5*empty[-1]))
+            else:
+                coin=pygame.image.load("hub/Assets/Images/Coin2.png").convert()
+                coin.set_colorkey((0,0,0))
+                coin=pygame.transform.scale(coin,(55,45))
+                self.screen.blit(coin,(463-26.5+58.5*x,210-22.5+50.5*empty[-1]))
             if self.win_check():
-                self.running=False
-                    
+                self.running=False                    
                 print(self.current_player,"WON")
             else:
                 self.switch_turns()
@@ -124,27 +70,14 @@ class Connect4(Game):
     def event_handler(self, event):
         if event.type==pygame.MOUSEBUTTONDOWN:
             self.current_move=list(pygame.mouse.get_pos())
-            x,y=self.current_move
-            if 209<=y<520 and 443<=x<836:
-                if 442<=x<498:
-                    self.current_move[0]=0
-                elif 498<=x<554:
-                    self.current_move[0]=1
-                elif 554<=x<611:
-                    self.current_move[0]=2
-                elif 611<=x<670:
-                    self.current_move[0]=3
-                elif 670<=x<722:
-                    self.current_move[0]=4
-                elif 722<=x<778:
-                    self.current_move[0]=5
-                elif 778<=x<836:
-                    self.current_move[0]=6
+            x, y = self.current_move
+            y_min,y_max = 184, 543
+            x_min, x_max = 432, 843
 
+            if y_min <= y < y_max and x_min <= x < x_max:
+                col_width = (x_max - x_min) / 7
+                self.current_move[0] = int((x - x_min) / col_width)
                 self.update_board()
-                
-                
-                
-                
+                 
 
 Connect4().run()          

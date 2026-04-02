@@ -10,10 +10,10 @@ import datetime
 import random
 
 """Things I need for a tictactoe game:
-    1.Board
+    ~1.Board~
     2.Characters/Players
-    3.Way to check win
-    4.Tokens
+    ~3.Way to check win~
+    ~4.Tokens~
     5.Theme
     6.Size of Screen
     7.Winning Screen
@@ -27,13 +27,10 @@ class Game:
         self.Resolution=Resolution
         self.Theme=Theme
         self.Characters=Characters
-        self.screen=pygame.display.set_mode(Resolution)
+        self.screen=pygame.display.set_mode(Resolution,pygame.RESIZABLE)
         self.current_player=0
         self.clock=pygame.time.Clock()
         self.current_move=[-1,-1]
-        bg=pygame.image.load("hub/Assets/Images/Background1.jpg").convert()
-        bg=pygame.transform.scale(bg,Resolution)
-        self.screen.blit(bg)
 
     def win_check(self):
         pass
@@ -57,12 +54,12 @@ class Game:
         pass
 
     def run(self):
-        running=True
+        self.running=True
 
         self.generate_board()
         self.generate_players()
         
-        while running:
+        while self.running:
             
             self.clock.tick(60)
             self.time_elapsed=self.timer()
@@ -73,15 +70,11 @@ class Game:
                     sys.exit()
                 else:
                     self.event_handler(event)
+            
             pygame.display.update()
 
-            if self.win_check():
-                running=False
-            else:
-                self.switch_turns()
 
 
-Game().run()
 
             
 
