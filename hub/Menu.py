@@ -18,7 +18,7 @@ class Menu:
         self.character=character
         self.screen=pygame.display.set_mode(Resolution)
         self.clock=pygame.time.Clock()
-        background=pygame.image.load("./hub/Menu assets/Images/Background1.jpg").convert()
+        background=pygame.image.load("./hub/Assets/Images/Background1.jpg").convert()
         self.background=pygame.transform.scale(background,Resolution)
 
     def event_handler(self,event):

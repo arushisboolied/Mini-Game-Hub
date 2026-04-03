@@ -12,9 +12,9 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from game import Game
 
 class Connect4(Game):
-    def __init__(self, players=(0,0), Resolution=(1280,720), Theme="medieval", Characters=(1,2)):
-        super().__init__(players, Resolution, Theme, Characters)
-        self.Board_screen=None
+    def __init__(self,game_name="Connect4", players=("Mohit","Arush"), Resolution=(1280,720), theme="medieval", Characters=(0,1)):
+        super().__init__(game_name,players, Resolution, theme, Characters)      
+        self.Board=np.ones(49,dtype=int).reshape(7,7)*(-1)
 
     def win_check(self):
         x,y=self.current_move
@@ -23,24 +23,14 @@ class Connect4(Game):
             return True
         if (self.Board[0:4,y]==checker).all() or (self.Board[1:5,y]==checker).all() or (self.Board[2:6,y]==checker).all() or (self.Board[3:7,y]==checker).all():
             return True
-        Diag1=np.diagonal(self.Board,offset=x-y)
+        Diag1=np.diagonal(self.Board,offset=y-x)
         Board2=np.fliplr(self.Board)
-        Diag2=np.diagonal(Board2,offset=y-x)
+        Diag2=np.diagonal(Board2,offset=x-y)
 
         if (len(Diag1[0:4])==4 and (Diag1[0:4]==checker).all()) or (len(Diag1[1:5])==4 and (Diag1[1:5]==checker).all()) or (len(Diag1[2:6])==4 and (Diag1[2:6]==checker).all()) or (len(Diag1[3:7])==4 and (Diag1[3:7]==checker).all()) or (len(Diag2[0:4])==4 and (Diag2[0:4]==checker).all()) or (len(Diag2[1:5])==4 and (Diag2[1:5]==checker).all()) or (len(Diag2[2:6])==4 and (Diag2[2:6]==checker).all()) or (len(Diag2[3:7])==4 and (Diag2[3:7]==checker).all()):
             return True
         
         return False
-    
-    def generate_board(self):
-        self.Board=np.ones(49,dtype=int).reshape(7,7)*(-1)
-        image=pygame.image.load("hub/Assets/Images/Connect4.png").convert()
-        image2=pygame.image.load("hub/Assets/Images/Connect4_Board.png").convert()
-        image2.set_colorkey((0,0,0))
-        image=pygame.transform.scale(image,self.Resolution)
-        image2=pygame.transform.scale(image2,(600,600))
-        self.screen.blit(image,(0,0))
-        self.screen.blit(image2,(340,60))
     
     def update_board(self):
         x=self.current_move[0]
@@ -50,29 +40,28 @@ class Connect4(Game):
             self.Board[x, empty[-1]] = self.current_player
             self.current_move[1] = empty[-1]
             if self.current_player==0:
-                coin=pygame.image.load("hub/Assets/Images/Coin1.png").convert()
-                coin.set_colorkey((0,0,0))
-                coin=pygame.transform.scale(coin,(55,50))
-                self.screen.blit(coin,(463-26.5+58.5*x,210-25+50.5*empty[-1]))
+                coin=self.assets.token1
+                self.screen.blit(coin,(self.assets.start[0]-self.assets.token_size[0]/2+self.assets.tokengap[0]*x,self.assets.start[1]-self.assets.token_size[1]/2+self.assets.tokengap[1]*empty[-1]))
             else:
-                coin=pygame.image.load("hub/Assets/Images/Coin2.png").convert()
-                coin.set_colorkey((0,0,0))
-                coin=pygame.transform.scale(coin,(55,45))
-                self.screen.blit(coin,(463-26.5+58.5*x,210-22.5+50.5*empty[-1]))
+                coin=self.assets.token2
+                self.screen.blit(coin,(self.assets.start[0]-self.assets.token_size[0]/2+self.assets.tokengap[0]*x,self.assets.start[1]-self.assets.token_size[1]/2+self.assets.tokengap[1]*empty[-1]))
+            Checker=np.ones(49,dtype="int").reshape(7,7)*(-1)
             if self.win_check():
-                self.running=False                    
-                print(self.current_player,"WON")
+                self.running=False
+            elif not((self.Board==Checker).any()):
+                self.running=False
+                self.tie=True
             else:
                 self.switch_turns()
-
         
     
     def event_handler(self, event):
         if event.type==pygame.MOUSEBUTTONDOWN:
             self.current_move=list(pygame.mouse.get_pos())
             x, y = self.current_move
-            y_min,y_max = 184, 543
-            x_min, x_max = 432, 843
+            print(x,y)
+            y_min,y_max=self.assets.y
+            x_min, x_max = self.assets.x
 
             if y_min <= y < y_max and x_min <= x < x_max:
                 col_width = (x_max - x_min) / 7
