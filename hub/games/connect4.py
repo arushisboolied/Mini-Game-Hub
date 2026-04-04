@@ -68,5 +68,5 @@ class Connect4(Game):
                 self.current_move[0] = int((x - x_min) / col_width)
                 self.update_board()
                  
-
-Connect4().run()          
+if __name__=="__main__":
+    Connect4().run()          

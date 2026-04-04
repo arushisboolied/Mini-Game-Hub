@@ -14,10 +14,10 @@ from Theme import Theme
 
 """Things I need for a tictactoe game:
     ~1.Board~
-    2.Characters/Players
+    ~2.Characters/Players~
     ~3.Way to check win~
     ~4.Tokens~
-    5.Theme
+    ~5.Theme~
     6.Size of Screen
     7.Winning Screen
     8.
@@ -50,8 +50,8 @@ class Game:
         image2=pygame.transform.scale(image2,self.assets.boardsize)
         self.screen.blit(image,(0,0))
         self.screen.blit(image2,self.assets.pos)
-        self.frame1=self.screen.subsurface(pygame.Rect(150,390,140,180)).copy()
-        self.frame2=self.screen.subsurface(pygame.Rect(990,390,140,180)).copy()
+        self.frame1=self.screen.subsurface(pygame.Rect(150,390,200,180)).copy()
+        self.frame2=self.screen.subsurface(pygame.Rect(990,390,200,180)).copy()
 
     def generate_players(self):
         character0_0=self.assets.character[self.Characters[0]][0]
@@ -103,6 +103,16 @@ class Game:
         self.screen.blit(self.assets.token1,self.assets.tokenloc1)
         self.screen.blit(self.assets.token2,self.assets.tokenloc2)
 
+    def display_game_name(self):
+        frame=self.assets.timer
+        frame=pygame.transform.scale(frame,self.assets.textboxsize)
+        frame_rect=frame.get_rect()
+        frame_rect.center=self.assets.frame_center
+        self.screen.blit(frame,frame_rect)
+        game_name=self.assets.game_name
+        game_name_rect=self.assets.game_name_rect
+        self.screen.blit(game_name,game_name_rect)
+
         
     def event_handler(self,event):
         pass
@@ -115,6 +125,7 @@ class Game:
 
         self.generate_board()
         self.display_player_names()
+        self.display_game_name()
         
         while self.running:
             
