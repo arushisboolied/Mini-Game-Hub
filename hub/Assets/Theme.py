@@ -82,7 +82,7 @@ class Theme:
                 self.x=416,866
                 self.y=133,530
 
-                self.token_size=(60,60)
+                self.token_size=(71,71)
                 self.token1=pygame.image.load(os.path.join(os.path.dirname(__file__),"./Images/Coin1_Future.png")).convert()
                 self.token1.set_colorkey((0,0,0))
                 self.token1=pygame.transform.scale(self.token1,self.token_size)                
@@ -120,5 +120,63 @@ class Theme:
                 self.game_name_rect=self.game_name.get_rect()
                 self.game_name_rect.center=640,640
                 self.textboxsize=(600,150)
+                self.frame_center=(640,635)
+        elif name=="dune":
+            self.timer=pygame.image.load(os.path.join(os.path.dirname(__file__),"./Images/Timer_Dune.png")).convert()
+            self.timer=pygame.transform.scale(self.timer,(400,120))
+            self.timer.set_colorkey((0,0,0))
+            self.loc1=(440,0)
+            self.text=pygame.font.Font(os.path.join(os.path.dirname(__file__),"./Dune Rise 400.ttf"),50)
+            self.text_colour=(233,203,142)
+            self.textloc=(550,40)
+            if game=="Connect4":
+                self.bg=pygame.image.load(os.path.join(os.path.dirname(__file__),"./Images/Connect4_Dune.png")).convert()
+                self.boardscreen=pygame.image.load(os.path.join(os.path.dirname(__file__),"./Images/Connect4_Board_Dune.png")).convert()
+                self.boardscreen.set_colorkey((0,0,0))
+                self.pos=(340,60)
+                self.boardsize=600,600
+                self.start=(471.2,204)
+                self.tokengap=(55.8,50.1)
+                self.x=438,834
+                self.y=176,535
+
+                self.token_size=(53,53)
+                self.token1=pygame.image.load(os.path.join(os.path.dirname(__file__),"./Images/Coin1_Dune.png")).convert()
+                self.token1.set_colorkey((0,0,0))
+                self.token1=pygame.transform.scale(self.token1,self.token_size)                
+                self.token2=pygame.image.load(os.path.join(os.path.dirname(__file__),"./Images/Coin2_Dune.png")).convert()
+                self.token2.set_colorkey((0,0,0))
+                self.token2=pygame.transform.scale(self.token2,self.token_size)
+
+                self.character0_0=pygame.image.load(os.path.join(os.path.dirname(__file__),"./Images/Sprite0_0_Dune.png")).convert()
+                self.character0_0=pygame.transform.scale(self.character0_0,(140,180))
+                self.character0_0.set_colorkey((0,0,0))
+                self.character0_1=pygame.image.load(os.path.join(os.path.dirname(__file__),"./Images/Sprite0_1_Dune.png")).convert()
+                self.character0_1=pygame.transform.scale(self.character0_1,(140,180))
+                self.character0_1.set_colorkey((0,0,0))
+                self.character1_0=pygame.image.load(os.path.join(os.path.dirname(__file__),"./Images/Sprite1_0_Dune.png")).convert()
+                self.character1_0=pygame.transform.scale(self.character1_0,(160,180))
+                self.character1_0.set_colorkey((255,0,0))
+                self.character1_1=pygame.image.load(os.path.join(os.path.dirname(__file__),"./Images/Sprite1_1_Dune.png")).convert()
+                self.character1_1=pygame.transform.scale(self.character1_1,(200,180))
+                self.character1_1.set_colorkey((0,0,0))
+                self.character=((self.character0_0,self.character0_1),(self.character1_0,self.character1_1))
+                self.ch1pos=(150,390)
+                self.ch2pos=(990,390)
+
+                self.Player1=self.text.render(str(players[0]),True,(255,255,255))
+                self.text_rect1=self.Player1.get_rect()
+                self.text_rect1.center=220,285
+                self.tokenloc1=(220-55/2,310)
+
+                self.Player2=self.text.render(str(players[1]),True,(255,255,255))
+                self.text_rect2=self.Player2.get_rect()
+                self.text_rect2.center=1060,285
+                self.tokenloc2=(1060-55/2,310)
+                
+                self.game_name=self.text.render(str(game),True,self.text_colour)
+                self.game_name_rect=self.game_name.get_rect()
+                self.game_name_rect.center=640,640
+                self.textboxsize=(700,150)
                 self.frame_center=(640,635)
         
