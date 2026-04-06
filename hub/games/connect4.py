@@ -59,7 +59,6 @@ class Connect4(Game):
         if event.type==pygame.MOUSEBUTTONDOWN:
             self.current_move=list(pygame.mouse.get_pos())
             x, y = self.current_move
-            print(x,y)
             y_min,y_max=self.assets.y
             x_min, x_max = self.assets.x
 
@@ -69,4 +68,4 @@ class Connect4(Game):
                 self.update_board()
                  
 if __name__=="__main__":
-    Connect4(theme="dune").run()          
+    Connect4(theme="medieval").run()          

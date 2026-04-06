@@ -50,8 +50,8 @@ class Game:
         image2=pygame.transform.scale(image2,self.assets.boardsize)
         self.screen.blit(image,(0,0))
         self.screen.blit(image2,self.assets.pos)
-        self.frame1=self.screen.subsurface(pygame.Rect(150,390,200,180)).copy()
-        self.frame2=self.screen.subsurface(pygame.Rect(990,390,200,180)).copy()
+        self.frame1=self.screen.subsurface(pygame.Rect(self.assets.ch1pos[0],self.assets.ch1pos[1],200,180)).copy()
+        self.frame2=self.screen.subsurface(pygame.Rect(self.assets.ch2pos[0],self.assets.ch2pos[1],200,180)).copy()
 
     def generate_players(self):
         character0_0=self.assets.character[self.Characters[0]][0]
