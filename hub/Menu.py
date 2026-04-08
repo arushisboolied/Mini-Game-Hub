@@ -10,11 +10,10 @@ import datetime
 import random
 
 class Menu:
-    def __init__(self,character=1,Resolution=(1280,720),Theme="medieval"):
+    def __init__(self,character=1,Resolution=(1280,720)):
         pygame.init()
         pygame.font.init()
         self.Resolution=Resolution
-        self.Theme=Theme
         self.character=character
         self.screen=pygame.display.set_mode(Resolution)
         self.clock=pygame.time.Clock()

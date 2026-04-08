@@ -25,7 +25,7 @@ class Connect4(Game):
             return True
         Diag1=np.diagonal(self.Board,offset=y-x)
         Board2=np.fliplr(self.Board)
-        Diag2=np.diagonal(Board2,offset=x-y)
+        Diag2=np.diagonal(Board2,offset=6-x-y)
 
         if (len(Diag1[0:4])==4 and (Diag1[0:4]==checker).all()) or (len(Diag1[1:5])==4 and (Diag1[1:5]==checker).all()) or (len(Diag1[2:6])==4 and (Diag1[2:6]==checker).all()) or (len(Diag1[3:7])==4 and (Diag1[3:7]==checker).all()) or (len(Diag2[0:4])==4 and (Diag2[0:4]==checker).all()) or (len(Diag2[1:5])==4 and (Diag2[1:5]==checker).all()) or (len(Diag2[2:6])==4 and (Diag2[2:6]==checker).all()) or (len(Diag2[3:7])==4 and (Diag2[3:7]==checker).all()):
             return True
@@ -39,13 +39,9 @@ class Connect4(Game):
         if empty.size > 0:
             self.Board[x, empty[-1]] = self.current_player
             self.current_move[1] = empty[-1]
-            if self.current_player==0:
-                coin=self.assets.token1
-                self.screen.blit(coin,(self.assets.start[0]-self.assets.token_size[0]/2+self.assets.tokengap[0]*x,self.assets.start[1]-self.assets.token_size[1]/2+self.assets.tokengap[1]*empty[-1]))
-            else:
-                coin=self.assets.token2
-                self.screen.blit(coin,(self.assets.start[0]-self.assets.token_size[0]/2+self.assets.tokengap[0]*x,self.assets.start[1]-self.assets.token_size[1]/2+self.assets.tokengap[1]*empty[-1]))
+            self.redraw_tokens()
             Checker=np.ones(49,dtype="int").reshape(7,7)*(-1)
+                
             if self.win_check():
                 self.running=False
             elif not((self.Board==Checker).any()):
@@ -60,7 +56,11 @@ class Connect4(Game):
             self.current_move=list(pygame.mouse.get_pos())
             x, y = self.current_move
             y_min,y_max=self.assets.y
+            y_min=y_min*self.Resolution[1]/720
+            y_max=y_max*self.Resolution[1]/720
             x_min, x_max = self.assets.x
+            x_min=x_min*self.Resolution[0]/1280
+            x_max=x_max*self.Resolution[0]/1280
 
             if y_min <= y < y_max and x_min <= x < x_max:
                 col_width = (x_max - x_min) / 7
@@ -68,4 +68,4 @@ class Connect4(Game):
                 self.update_board()
                  
 if __name__=="__main__":
-    Connect4(theme="medieval").run()          
+    Connect4(theme="dune").run()          
