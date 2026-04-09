@@ -11,10 +11,15 @@ import random
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from game import Game
 
-class TicTacToe(Game):
+class Othello(Game):
     def __init__(self,game_name="Othello", players=("Player1","Player2"), Resolution=(1280,720), theme="medieval", Characters=(0,1)):
         super().__init__(game_name,players, Resolution, theme, Characters)      
-        self.Board=np.ones(100,dtype=int).reshape(10,10)*(-1)
+        
+        self.Board=np.ones(64,dtype=int).reshape(8,8)*(-1)
+        self.Board[3][3] = 0
+        self.Board[3][4] = 1
+        self.Board[4][3] = 1
+        self.Board[4][4] = 0
 
     def win_check(self):
         pass
