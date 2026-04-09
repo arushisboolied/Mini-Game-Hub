@@ -21,6 +21,33 @@ class Othello(Game):
         self.Board[4][3] = 1
         self.Board[4][4] = 0
 
+        self.end = False
+
+        self.directions = np.array([
+            [-1,-1], [-1,0], [-1,1]
+            [0,-1], [0,0], [0,1]
+            [1,-1], [1,0], [1,1]
+        ])
+    
+    def boardcheck(self,x,y):
+        
+        squares = np.arange(1,8) 
+        dx = self.directions[:, 0][:, None]*squares
+        dy = self.directions[:, 1][:, None]*squares
+
+        xs = x + dx
+        ys = y + dy
+
+        valid = (xs >= 0) & (xs < 8) & (ys >= 0) & (ys < 8)
+        xs = np.where(valid, xs, 0)
+        ys = np.where(valid, ys, 0)
+
+        vals = self.Board[ys, xs]
+        vals = np.where(valid, vals, -2)
+
+        return xs, ys, vals
+       
+
     def win_check(self):
         pass
 
