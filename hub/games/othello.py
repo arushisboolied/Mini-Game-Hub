@@ -12,6 +12,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from game import Game
 
 class Othello(Game):
+
     def __init__(self,game_name="Othello", players=("Player1","Player2"), Resolution=(1280,720), theme="medieval", Characters=(0,1)):
         super().__init__(game_name,players, Resolution, theme, Characters)      
         
@@ -24,12 +25,13 @@ class Othello(Game):
         self.end = False
 
         self.directions = np.array([
-            [-1,-1], [-1,0], [-1,1]
-            [0,-1], [0,0], [0,1]
+            [-1,-1], [-1,0], [-1,1],
+            [0,-1], [0,0], [0,1],
             [1,-1], [1,0], [1,1]
         ])
     
-    def boardcheck(self,x,y):
+
+    def board_check(self,x,y):
         
         squares = np.arange(1,8) 
         dx = self.directions[:, 0][:, None]*squares
@@ -47,13 +49,54 @@ class Othello(Game):
 
         return xs, ys, vals
        
+    
+    def check_valid(self, x, y, player):
+
+        if self.Board[y, x] != -1:
+            return False
+
+        opponent = 1 - player
+
+        _, _, line = self.board_check(x, y)
+
+        opp = (line == opponent)
+        me = (line == player)
+
+        seen_opp = np.cumsum(opp, axis=1)
+
+        capture = me & (seen_opp > 0)
+
+        return np.any(capture)
+    
+
+    def flip_pieces(self,x,y,player):
+        pass
+
+
+    def has_valid_moves(self,player):
+        pass
+
 
     def win_check(self):
-        pass
+
+        full = np.all(self.Board != -1)
+        no_moves = not (self.has_valid_moves(0) or self.has_valid_moves(1))
+
+        if full or no_moves:
+            self.end = True
+
 
     def update_board(self):
-        pass
-        
+
+        x, y = self.current_move
+        player = self.current_player
+
+        if self.check_valid(x, y, player):
+            self.flip_pieces(x, y, player)
+            self.switch_turns()
+            self.win_check()
+
+
     def event_handler(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, mouse_y = pygame.mouse.get_pos()
@@ -70,6 +113,8 @@ class Othello(Game):
 
                 self.current_move = [grid_x, grid_y]
                 self.update_board()
+
+ 
                  
 if __name__=="__main__":
     Othello(theme="medieval").run()          
