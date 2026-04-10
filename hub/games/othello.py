@@ -70,7 +70,16 @@ class Othello(Game):
     
 
     def flip_pieces(self,x,y,player):
-        pass
+        opponent = 1 - player
+
+        _,_,line = self.board_check(self,x,y)
+
+        opp = (line == opponent)
+        me = (line == player)
+
+        cum_opp = np.cumsum(opp, axis=1)
+
+        flips = me & (cum_opp > 0)
 
 
     def has_valid_moves(self,player):
@@ -105,8 +114,8 @@ class Othello(Game):
             x_min, x_max = self.assets.x
 
             if y_min <= mouse_y < y_max and x_min <= mouse_x < x_max:
-                col_width = (x_max - x_min) / 10
-                row_height = (y_max - y_min) / 10
+                col_width = (x_max - x_min) / 8
+                row_height = (y_max - y_min) / 8
 
                 grid_x = int((mouse_x - x_min) / col_width)
                 grid_y = int((mouse_y - y_min) / row_height)

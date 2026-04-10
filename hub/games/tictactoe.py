@@ -12,17 +12,28 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from game import Game
 
 class TicTacToe(Game):
+
+    #initializing the board 
     def __init__(self,game_name="TicTacToe", players=("Player1","Player2"), Resolution=(1280,720), theme="medieval", Characters=(0,1)):
         super().__init__(game_name,players, Resolution, theme, Characters)      
         self.Board=np.ones(100,dtype=int).reshape(10,10)*(-1)
 
+    #win condition 
     def win_check(self):
+
+        #takes current move from event handler
         x,y=self.current_move
+
+        #checker is an array of 5 ones
         checker=np.ones(5,dtype=int)*(self.current_player)
+
+        #conditions for 5 continuous x or o along a row or column
         if (self.Board[x,0:5]==checker).all() or (self.Board[x,1:6]==checker).all() or (self.Board[x,2:7]==checker).all() or (self.Board[x,3:8]==checker).all() or (self.Board[x,4:9]==checker).all() or (self.Board[x,5:10]==checker).all():
             return True
         if (self.Board[0:5,y]==checker).all() or (self.Board[1:6,y]==checker).all() or (self.Board[2:7,y]==checker).all() or (self.Board[3:8,y]==checker).all() or (self.Board[4:9,y]==checker).all() or (self.Board[5:10,y]==checker).all():
             return True
+        
+        #same for diagonals
         Diag1=np.diagonal(self.Board,offset=y-x)
         Board2=np.fliplr(self.Board)
         Diag2=np.diagonal(Board2,offset= 9-x-y)
@@ -32,7 +43,9 @@ class TicTacToe(Game):
         
         return False
     
+    #to blit the token images on the board when a move is made 
     def update_board(self):
+
         x, y = self.current_move
 
         if self.Board[x, y] == -1:
@@ -61,10 +74,14 @@ class TicTacToe(Game):
             else:
                 self.switch_turns()
         
+    #to read mouse inputs in the game and make it interactive
     def event_handler(self, event):
+
+        #registers a click and the location of the click
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, mouse_y = pygame.mouse.get_pos()
             
+            #defining the board bounds so out of bounds moves dont register
             y_min, y_max = self.assets.y
             x_min, x_max = self.assets.x
 
