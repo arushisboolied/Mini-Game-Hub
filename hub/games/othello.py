@@ -1,22 +1,19 @@
 import pygame
-import matplotlib as plt
 import numpy as np
 import os
-import sys
-import time
-import pathlib
-import subprocess
-import datetime
-import random
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
 from game import Game
+
 
 class Othello(Game):
 
-    def __init__(self,game_name="Othello", players=("Player1","Player2"), Resolution=(1280,720), theme="medieval", Characters=(0,1)):
-        super().__init__(game_name,players, Resolution, theme, Characters)      
-        
-        self.Board=np.ones(64,dtype=int).reshape(8,8)*(-1)
+    def __init__(self, game_name="Othello", players=("Player1", "Player2"),
+                 Resolution=(1280, 720), theme="medieval", Characters=(0, 1)):
+
+        super().__init__(game_name, players, Resolution, theme, Characters)
+
+        self.Board = np.full((8, 8), -1, dtype=int)
+
         self.Board[3][3] = 0
         self.Board[3][4] = 1
         self.Board[4][3] = 1
@@ -24,101 +21,82 @@ class Othello(Game):
 
         self.end = False
 
-        self.directions = np.array([
-            [-1,-1], [-1,0], [-1,1],
-            [0,-1], [0,0], [0,1],
-            [1,-1], [1,0], [1,1]
-        ])
-    
+        self.directions = [
+            (-1, -1), (-1, 0), (-1, 1),
+            (0, -1),           (0, 1),
+            (1, -1),  (1, 0),  (1, 1)
+        ]
 
-    def board_check(self,x,y):
-        
-        squares = np.arange(1,8) 
-        dx = self.directions[:, 0][:, None]*squares
-        dy = self.directions[:, 1][:, None]*squares
+        self.current_move = [-1, -1]
+        self.update_board()
 
-        xs = x + dx
-        ys = y + dy
+    def draw_board(self):
+        for y in range(8):
+            for x in range(8):
+                if self.Board[y][x] == -1:
+                    continue
 
-        valid = (xs >= 0) & (xs < 8) & (ys >= 0) & (ys < 8)
-        xs = np.where(valid, xs, 0)
-        ys = np.where(valid, ys, 0)
+                coin = self.assets.token1 if self.Board[y][x] == 0 else self.assets.token2
 
-        vals = self.Board[ys, xs]
-        vals = np.where(valid, vals, -2)
+                self.screen.blit(
+                    coin,
+                    (
+                        self.assets.start[0] - self.assets.token_size[0] / 2 + self.assets.tokengap[0] * x,
+                        self.assets.start[1] - self.assets.token_size[1] / 2 + self.assets.tokengap[1] * y
+                    )
+                )
 
-        return xs, ys, vals
-       
-    
+
+    def is_on_board(self, x, y):
+        return 0 <= x < 8 and 0 <= y < 8
+
     def check_valid(self, x, y, player):
-
-        if self.Board[y, x] != -1:
+        if not self.is_on_board(x, y) or self.Board[y][x] != -1:
             return False
 
         opponent = 1 - player
 
-        _, _, line = self.board_check(x, y)
+        for dx, dy in self.directions:
+            nx, ny = x + dx, y + dy
+            found_opponent = False
 
-        opp = (line == opponent)
-        me = (line == player)
+            while self.is_on_board(nx, ny) and self.Board[ny][nx] == opponent:
+                nx += dx
+                ny += dy
+                found_opponent = True
 
-        seen_opp = np.cumsum(opp, axis=1)
+            if found_opponent and self.is_on_board(nx, ny) and self.Board[ny][nx] == player:
+                return True
 
-        capture = me & (seen_opp > 0)
+        return False
 
-        return np.any(capture)
-    
-
-    def flip_pieces(self,x,y,player):
+    def flip_pieces(self, x, y, player):
         opponent = 1 - player
 
-        _,_,line = self.board_check(self,x,y)
+        for dx, dy in self.directions:
+            nx, ny = x + dx, y + dy
+            pieces_to_flip = []
 
-        opp = (line == opponent)
-        me = (line == player)
+            while self.is_on_board(nx, ny) and self.Board[ny][nx] == opponent:
+                pieces_to_flip.append((nx, ny))
+                nx += dx
+                ny += dy
 
-        cum_opp = np.cumsum(opp, axis=1)
+            if pieces_to_flip and self.is_on_board(nx, ny) and self.Board[ny][nx] == player:
+                for fx, fy in pieces_to_flip:
+                    self.Board[fy][fx] = player
 
-        flips = me & (cum_opp > 0)
+        self.Board[y][x] = player
 
-
-        dir_indices = np.arange(line.shape[0])[:,None]
-        first_me_idx = np.argmax(me, axis=1)
-        mask = np.zeros_like(line, dtype=bool)
-        valid_dir = me.any(axis=1)
-        mask[dir_indices[valid_dir], :first_me_idx[valid_dir,None]] = True
-        mask = mask & opp
-
-
-        xs, ys, _ = self.board_check(x, y)
-        self.Board[ys[mask], xs[mask]] = player
-        self.Board[y, x] = player
-
-
-
-
-    def has_valid_moves(self,player):
-        
-        xs, ys = np.meshgrid(np.arange(8), np.arange(8))
-        xs_flat = xs.ravel()
-        ys_flat = ys.ravel()
-
-        empty_mask = self.Board[ys_flat, xs_flat] == -1
-        xs_empty = xs_flat[empty_mask]
-        ys_empty = ys_flat[empty_mask]
-
-
-        checks = np.array([self.check_valid(x, y, player) for x, y in zip(xs_empty, ys_empty)])
-        return np.any(checks)
-
-
+    def has_valid_moves(self, player):
+        for y in range(8):
+            for x in range(8):
+                if self.check_valid(x, y, player):
+                    return True
+        return False
 
     def win_check(self):
-
-        full = np.all(self.Board != -1)
-        no_moves = not (self.has_valid_moves(0) or self.has_valid_moves(1))
-
-        if full or no_moves:
+        if np.all(self.Board != -1) or not (self.has_valid_moves(0) or self.has_valid_moves(1)):
             self.end = True
 
 
@@ -127,27 +105,11 @@ class Othello(Game):
         x, y = self.current_move
         player = self.current_player
 
-
-        if self.check_valid(x, y, player):
+        if self.is_on_board(x, y) and self.check_valid(x, y, player):
             self.flip_pieces(x, y, player)
-
-           
-            if player == 0:
-                coin = self.assets.token1
-            else:
-                coin = self.assets.token2
-
-            self.screen.blit(
-                coin,
-                (
-                    self.assets.start[0] - self.assets.token_size[0]/2 + self.assets.tokengap[0]*x,
-                    self.assets.start[1] - self.assets.token_size[1]/2 + self.assets.tokengap[1]*y
-                )
-            )
 
             self.switch_turns()
 
-    
             if not self.has_valid_moves(self.current_player):
                 self.switch_turns()
                 if not self.has_valid_moves(self.current_player):
@@ -156,15 +118,19 @@ class Othello(Game):
 
             self.win_check()
 
+        self.draw_board()
+
 
     def event_handler(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
+
             mouse_x, mouse_y = pygame.mouse.get_pos()
-            
+
             y_min, y_max = self.assets.y
             x_min, x_max = self.assets.x
 
             if y_min <= mouse_y < y_max and x_min <= mouse_x < x_max:
+
                 col_width = (x_max - x_min) / 8
                 row_height = (y_max - y_min) / 8
 
@@ -174,7 +140,31 @@ class Othello(Game):
                 self.current_move = [grid_x, grid_y]
                 self.update_board()
 
- 
-                 
-if __name__=="__main__":
-    Othello(theme="medieval").run()          
+
+    def run(self):
+        self.running = True
+
+        while self.running:
+            self.clock.tick(60)
+
+            self.generate_board()
+            self.display_player_names()
+            self.display_game_name()
+            self.display_time()
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.running = False
+                    sys.exit()
+                else:
+                    self.event_handler(event)
+
+            self.generate_players()
+
+            self.draw_board()
+
+            pygame.display.update()
+
+
+if __name__ == "__main__":
+    Othello(theme="medieval").run()
