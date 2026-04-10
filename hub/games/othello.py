@@ -82,8 +82,35 @@ class Othello(Game):
         flips = me & (cum_opp > 0)
 
 
+        dir_indices = np.arange(line.shape[0])[:,None]
+        first_me_idx = np.argmax(me, axis=1)
+        mask = np.zeros_like(line, dtype=bool)
+        valid_dir = me.any(axis=1)
+        mask[dir_indices[valid_dir], :first_me_idx[valid_dir,None]] = True
+        mask = mask & opp
+
+
+        xs, ys, _ = self.board_check(x, y)
+        self.Board[ys[mask], xs[mask]] = player
+        self.Board[y, x] = player
+
+
+
+
     def has_valid_moves(self,player):
-        pass
+        
+        xs, ys = np.meshgrid(np.arange(8), np.arange(8))
+        xs_flat = xs.ravel()
+        ys_flat = ys.ravel()
+
+        empty_mask = self.Board[ys_flat, xs_flat] == -1
+        xs_empty = xs_flat[empty_mask]
+        ys_empty = ys_flat[empty_mask]
+
+
+        checks = np.array([self.check_valid(x, y, player) for x, y in zip(xs_empty, ys_empty)])
+        return np.any(checks)
+
 
 
     def win_check(self):
@@ -100,9 +127,33 @@ class Othello(Game):
         x, y = self.current_move
         player = self.current_player
 
+
         if self.check_valid(x, y, player):
             self.flip_pieces(x, y, player)
+
+           
+            if player == 0:
+                coin = self.assets.token1
+            else:
+                coin = self.assets.token2
+
+            self.screen.blit(
+                coin,
+                (
+                    self.assets.start[0] - self.assets.token_size[0]/2 + self.assets.tokengap[0]*x,
+                    self.assets.start[1] - self.assets.token_size[1]/2 + self.assets.tokengap[1]*y
+                )
+            )
+
             self.switch_turns()
+
+    
+            if not self.has_valid_moves(self.current_player):
+                self.switch_turns()
+                if not self.has_valid_moves(self.current_player):
+                    self.end = True
+                    self.running = False
+
             self.win_check()
 
 
