@@ -1,7 +1,14 @@
 import pygame
+import matplotlib as plt
 import numpy as np
 import os
-
+import sys
+import time
+import pathlib
+import subprocess
+import datetime
+import random
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from game import Game
 
 

@@ -105,12 +105,12 @@ class Theme:
                 self.boardscreen=pygame.image.load(os.path.join(os.path.dirname(__file__),"./Images/Othello_Board_medieval.png")).convert_alpha()
                 self.pos=(340,60)
                 self.boardsize=600,600
-                self.start=(464,210)
-                self.tokengap=(58.5,50)
-                self.x=432,843
+                self.start=(464,194)
+                self.tokengap=(50.14,48.28)
+                self.x=445,837
                 self.y=184,543
 
-                self.token_size=(55,50)
+                self.token_size=(50,50)
                 self.token1=pygame.image.load(os.path.join(os.path.dirname(__file__),"./Images/Othello1_medieval.png")).convert_alpha()
                 self.token1=pygame.transform.scale(self.token1,self.token_size)                
                 self.token2=pygame.image.load(os.path.join(os.path.dirname(__file__),"./Images/Othello2_medieval.png")).convert_alpha()
