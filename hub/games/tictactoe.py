@@ -47,23 +47,11 @@ class TicTacToe(Game):
     def update_board(self):
 
         x, y = self.current_move
-
         if self.Board[x, y] == -1:
             self.Board[x, y] = self.current_player
+            self.redraw_tokens()
 
-            if self.current_player == 0:
-                coin = self.assets.token1
-            else:
-                coin = self.assets.token2
 
-            self.screen.blit(
-                coin,
-                (
-                    self.assets.start[0] - self.assets.token_size[0]/2 + self.assets.tokengap[0]*x,
-                    self.assets.start[1] - self.assets.token_size[1]/2 + self.assets.tokengap[1]*y
-                )
-            )
-            
             if self.win_check():
                 self.running = False
 
@@ -84,6 +72,12 @@ class TicTacToe(Game):
             #defining the board bounds so out of bounds moves dont register
             y_min, y_max = self.assets.y
             x_min, x_max = self.assets.x
+
+            y_min=y_min*self.Resolution[1]/720
+            y_max=y_max*self.Resolution[1]/720
+            x_min, x_max = self.assets.x
+            x_min=x_min*self.Resolution[0]/1280
+            x_max=x_max*self.Resolution[0]/1280
 
             if y_min <= mouse_y < y_max and x_min <= mouse_x < x_max:
                 col_width = (x_max - x_min) / 10

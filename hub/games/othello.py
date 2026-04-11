@@ -37,42 +37,25 @@ class Othello(Game):
         self.current_move = [-1, -1]
         self.update_board()
 
-    def draw_board(self):
-        for y in range(8):
-            for x in range(8):
-                if self.Board[y][x] == -1:
-                    continue
-
-                coin = self.assets.token1 if self.Board[y][x] == 0 else self.assets.token2
-
-                self.screen.blit(
-                    coin,
-                    (
-                        self.assets.start[0] - self.assets.token_size[0] / 2 + self.assets.tokengap[0] * x,
-                        self.assets.start[1] - self.assets.token_size[1] / 2 + self.assets.tokengap[1] * y
-                    )
-                )
-
-
     def is_on_board(self, x, y):
         return 0 <= x < 8 and 0 <= y < 8
 
     def check_valid(self, x, y, player):
-        if not self.is_on_board(x, y) or self.Board[y][x] != -1:
+        if self.Board[x][y] != -1:
             return False
-
+        
         opponent = 1 - player
 
         for dx, dy in self.directions:
             nx, ny = x + dx, y + dy
             found_opponent = False
 
-            while self.is_on_board(nx, ny) and self.Board[ny][nx] == opponent:
+            while self.is_on_board(nx, ny) and self.Board[nx][ny] == opponent:
                 nx += dx
                 ny += dy
                 found_opponent = True
 
-            if found_opponent and self.is_on_board(nx, ny) and self.Board[ny][nx] == player:
+            if found_opponent and self.is_on_board(nx, ny) and self.Board[nx][ny] == player:
                 return True
 
         return False
@@ -84,16 +67,16 @@ class Othello(Game):
             nx, ny = x + dx, y + dy
             pieces_to_flip = []
 
-            while self.is_on_board(nx, ny) and self.Board[ny][nx] == opponent:
+            while self.is_on_board(nx, ny) and self.Board[nx][ny] == opponent:
                 pieces_to_flip.append((nx, ny))
                 nx += dx
                 ny += dy
 
-            if pieces_to_flip and self.is_on_board(nx, ny) and self.Board[ny][nx] == player:
+            if pieces_to_flip and self.is_on_board(nx, ny) and self.Board[nx][ny] == player:
                 for fx, fy in pieces_to_flip:
-                    self.Board[fy][fx] = player
+                    self.Board[fx][fy] = player
 
-        self.Board[y][x] = player
+        self.Board[x][y] = player
 
     def has_valid_moves(self, player):
         for y in range(8):
@@ -112,7 +95,7 @@ class Othello(Game):
         x, y = self.current_move
         player = self.current_player
 
-        if self.is_on_board(x, y) and self.check_valid(x, y, player):
+        if self.check_valid(x, y, player):
             self.flip_pieces(x, y, player)
 
             self.switch_turns()
@@ -124,9 +107,9 @@ class Othello(Game):
                     self.running = False
 
             self.win_check()
-
-        self.draw_board()
-
+        
+        self.redraw_tokens()
+        
 
     def event_handler(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -135,6 +118,12 @@ class Othello(Game):
 
             y_min, y_max = self.assets.y
             x_min, x_max = self.assets.x
+
+            y_min=y_min*self.Resolution[1]/720
+            y_max=y_max*self.Resolution[1]/720
+            x_min, x_max = self.assets.x
+            x_min=x_min*self.Resolution[0]/1280
+            x_max=x_max*self.Resolution[0]/1280
 
             if y_min <= mouse_y < y_max and x_min <= mouse_x < x_max:
 
@@ -146,31 +135,6 @@ class Othello(Game):
 
                 self.current_move = [grid_x, grid_y]
                 self.update_board()
-
-
-    def run(self):
-        self.running = True
-
-        while self.running:
-            self.clock.tick(60)
-
-            self.generate_board()
-            self.display_player_names()
-            self.display_game_name()
-            self.display_time()
-
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    self.running = False
-                    sys.exit()
-                else:
-                    self.event_handler(event)
-
-            self.generate_players()
-
-            self.draw_board()
-
-            pygame.display.update()
 
 
 if __name__ == "__main__":

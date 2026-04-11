@@ -143,8 +143,8 @@ class Game:
 
     def redraw_tokens(self):
         token_size=list(np.array(self.assets.token_size)*np.array(self.Resolution)/np.array([1280,720]))
-        for x in range(7):
-            for y in range(7):
+        for x in range(len(self.Board)):
+            for y in range(len(self.Board)):
                 pos=self.Board[x,y]
                 if pos==0:
                     coin=pygame.transform.scale(self.assets.token1,token_size)
@@ -162,7 +162,8 @@ class Game:
         while self.running:
             
             self.clock.tick(60)
-            self.display_time()            
+            self.display_time()   
+            self.redraw_tokens()         
 
             for event in pygame.event.get():
                 if event.type==pygame.QUIT:
