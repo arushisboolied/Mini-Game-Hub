@@ -44,17 +44,20 @@ class Game:
     def switch_turns(self):
         self.current_player=(self.current_player+1)%2
 
-    def generate_board(self):
+    def generate_background(self):
         image=self.assets.bg
-        image2=self.assets.boardscreen
         image=pygame.transform.scale(image,self.Resolution)
-        boardsize=list(np.array(self.assets.boardsize)*np.array(self.Resolution)/np.array([1280,720]))
-        image2=pygame.transform.scale(image2,boardsize)
         self.screen.blit(image,(0,0))
-        pos=list(np.array(self.assets.pos)*np.array(self.Resolution)/np.array([1280,720]))
-        self.screen.blit(image2,pos)
         self.frame1=self.screen.subsurface(pygame.Rect(self.assets.ch1pos[0]*self.Resolution[0]/1280,self.assets.ch1pos[1]*self.Resolution[1]/720,200*self.Resolution[0]/1280,180*self.Resolution[1]/720)).copy()
         self.frame2=self.screen.subsurface(pygame.Rect(self.assets.ch2pos[0]*self.Resolution[0]/1280,self.assets.ch2pos[1]*self.Resolution[1]/720,200*self.Resolution[0]/1280,180*self.Resolution[1]/720)).copy()
+
+    def generate_board(self):
+        image2=self.assets.boardscreen
+        boardsize=list(np.array(self.assets.boardsize)*np.array(self.Resolution)/np.array([1280,720]))
+        image2=pygame.transform.scale(image2,boardsize)
+        pos=list(np.array(self.assets.pos)*np.array(self.Resolution)/np.array([1280,720]))
+        self.screen.blit(image2,pos)
+
 
     def generate_players(self):
         character0_0=pygame.transform.scale(self.assets.character[self.Characters[0]][0],(self.assets.character0_0size[0]*self.Resolution[0]/1280,self.assets.character0_0size[1]*self.Resolution[1]/720))
@@ -155,6 +158,7 @@ class Game:
     def run(self):
         self.running=True
 
+        self.generate_background()
         self.generate_board()
         self.display_player_names()
         self.display_game_name()
@@ -162,8 +166,9 @@ class Game:
         while self.running:
             
             self.clock.tick(60)
-            self.display_time()   
-            self.redraw_tokens()         
+            self.redraw_tokens()  
+            self.display_time()  
+            self.display_game_name()      
 
             for event in pygame.event.get():
                 if event.type==pygame.QUIT:
@@ -172,6 +177,7 @@ class Game:
                 elif event.type == pygame.VIDEORESIZE:    
                     self.Resolution = event.size
                     self.screen = pygame.display.set_mode(self.Resolution, pygame.RESIZABLE)
+                    self.generate_background()
                     self.generate_board()
                     self.display_player_names()
                     self.display_game_name()

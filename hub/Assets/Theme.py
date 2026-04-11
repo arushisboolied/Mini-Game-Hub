@@ -91,6 +91,8 @@ class Theme:
                 self.token1=pygame.transform.scale(self.token1,self.token_size)                
                 self.token2=pygame.image.load(os.path.join(os.path.dirname(__file__),"./Images/Othello2_medieval.png")).convert_alpha()
                 self.token2=pygame.transform.scale(self.token2,self.token_size)
+                self.token3=pygame.image.load(os.path.join(os.path.dirname(__file__),"./Images/Othello3_medieval.png")).convert_alpha()
+                self.token3=pygame.transform.scale(self.token3,self.token_size)
 
                 self.character0_0=pygame.image.load(os.path.join(os.path.dirname(__file__),"./Images/Sprite0_0_medieval.png")).convert_alpha()
                 self.character0_0=pygame.transform.scale(self.character0_0,(140,180))

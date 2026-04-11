@@ -59,6 +59,21 @@ class Othello(Game):
                 return True
 
         return False
+    
+    def valid_moves(self, player):
+        moves = []
+        token_size=list(np.array(self.assets.token_size)*np.array(self.Resolution)/np.array([1280,720]))
+        self.generate_board()
+        for y in range(8):
+            for x in range(8):
+                if self.check_valid(x, y, player):
+                    coin=pygame.transform.scale(self.assets.token3,token_size)
+                    self.screen.blit(coin,(self.assets.start[0]*self.Resolution[0]/1280-self.assets.token_size[0]*self.Resolution[0]/2560+self.assets.tokengap[0]*x*self.Resolution[0]/1280,self.assets.start[1]*self.Resolution[1]/720-self.assets.token_size[1]*self.Resolution[1]/720/2+self.assets.tokengap[1]*y*self.Resolution[1]/720))
+    
+    def redraw_tokens(self):
+        self.valid_moves(self.current_player)
+        super().redraw_tokens()
+        
 
     def flip_pieces(self, x, y, player):
         opponent = 1 - player
@@ -107,9 +122,6 @@ class Othello(Game):
                     self.running = False
 
             self.win_check()
-        
-        self.redraw_tokens()
-        
 
     def event_handler(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
