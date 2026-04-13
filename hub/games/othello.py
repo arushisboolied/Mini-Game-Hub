@@ -74,6 +74,8 @@ class Othello(Game):
         self.valid_moves(self.current_player)
         super().redraw_tokens()
         
+        self.counter()
+        
 
     def flip_pieces(self, x, y, player):
         opponent = 1 - player
@@ -147,7 +149,25 @@ class Othello(Game):
 
                 self.current_move = [grid_x, grid_y]
                 self.update_board()
-
+    
+    def counter(self):
+        counter1=str(np.sum(self.Board==1))
+        counter2=str(np.sum(self.Board==0))
+        box=pygame.transform.scale(self.assets.timer,(200*self.Resolution[0]/1280,100*self.Resolution[1]/720))
+        rect=box.get_rect()
+        rect.center=self.assets.Counter1center
+        counter1=self.assets.text.render(counter1,True,(255,255,255))
+        text_center=(rect.center[0],rect.center[1]+5)
+        text_rect=counter1.get_rect(center=text_center)
+        self.screen.blit(box,rect)        
+        self.screen.blit(counter1,text_rect)
+        
+        rect.center=self.assets.Counter2center
+        counter1=self.assets.text.render(counter2,True,(255,255,255))
+        text_center=(rect.center[0],rect.center[1]+5)
+        text_rect=counter1.get_rect(center=text_center)
+        self.screen.blit(box,rect)        
+        self.screen.blit(counter1,text_rect)
 
 if __name__ == "__main__":
     Othello(theme="medieval").run()

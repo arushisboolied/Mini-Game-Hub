@@ -94,33 +94,9 @@ class Theme:
                 self.token3=pygame.image.load(os.path.join(os.path.dirname(__file__),"./Images/Othello3_medieval.png")).convert_alpha()
                 self.token3=pygame.transform.scale(self.token3,self.token_size)
 
-                self.character0_0=pygame.image.load(os.path.join(os.path.dirname(__file__),"./Images/Sprite0_0_medieval.png")).convert_alpha()
-                self.character0_0=pygame.transform.scale(self.character0_0,(140,180))
-                self.character0_1=pygame.image.load(os.path.join(os.path.dirname(__file__),"./Images/Sprite0_1_medieval.png")).convert_alpha()
-                self.character0_1=pygame.transform.scale(self.character0_1,(140,180))
-                self.character1_0=pygame.image.load(os.path.join(os.path.dirname(__file__),"./Images/Sprite1_0_medieval.png")).convert_alpha()
-                self.character1_0=pygame.transform.scale(self.character1_0,(140,180))
-                self.character1_1=pygame.image.load(os.path.join(os.path.dirname(__file__),"./Images/Sprite1_1_medieval.png")).convert_alpha()
-                self.character1_1=pygame.transform.scale(self.character1_1,(140,180))
-                self.character=((self.character0_0,self.character0_1),(self.character1_0,self.character1_1))
-                self.ch1pos=(150,390)
-                self.ch2pos=(990,390)
+                self.Counter1center=220,200
+                self.Counter2center=1060,200
 
-                self.Player1=self.text.render(str(players[0]),True,(255,255,255))
-                self.text_rect1=self.Player1.get_rect()
-                self.text_rect1.center=220,285
-                self.tokenloc1=(220-55/2,310)
-
-                self.Player2=self.text.render(str(players[1]),True,(255,255,255))
-                self.text_rect2=self.Player2.get_rect()
-                self.text_rect2.center=1060,285
-                self.tokenloc2=(1060-55/2,310)
-                
-                self.game_name=self.text.render(str(game),True,self.text_colour)
-                self.game_name_rect=self.game_name.get_rect()
-                self.game_name_rect.center=640,640
-                self.textboxsize=(400,150)
-                self.frame_center=(640,635)
 
         elif name=="futuristic":
             self.timer=pygame.image.load(os.path.join(os.path.dirname(__file__),"./Images/Timer_Future.png")).convert_alpha()
