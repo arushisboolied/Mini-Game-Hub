@@ -67,24 +67,9 @@ def graphs(wins, games):
     axs[1].pie(game_values, labels=game_labels, autopct='%1.1f%%')
     axs[1].set_title("Most Played Games")
 
-    ax_next = plt.axes([0.2, 0.05, 0.25, 0.1])
-    ax_quit = plt.axes([0.55, 0.05, 0.25, 0.1])
+    plt.savefig("leaderboard.png", transparent=True)
 
-    btn_next = Button(ax_next, "Next Game")
-    btn_quit = Button(ax_quit, "Quit")
 
-    def next_game(event):
-        plt.close(fig)
-        subprocess.call([sys.executable, "game.py"])
-
-    def quit_game(event):
-        plt.close(fig)
-        sys.exit()
-
-    btn_next.on_clicked(next_game)
-    btn_quit.on_clicked(quit_game)
-
-    plt.show()
 
 
 def main():
