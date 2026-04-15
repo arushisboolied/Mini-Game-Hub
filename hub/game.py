@@ -18,9 +18,8 @@ from Theme import Theme
     ~3.Way to check win~
     ~4.Tokens~
     ~5.Theme~
-    6.Size of Screen
+    ~6.Size of Screen~
     7.Winning Screen
-    8.
 """
 class Game:
     def __init__(self,game_name,players=("Mohit","Arush"),Resolution=(1280,720),theme="medieval",Characters=(0,1)):

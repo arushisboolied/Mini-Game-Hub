@@ -15,7 +15,7 @@ class Menu:
         pygame.font.init()
         self.Resolution=Resolution
         self.character=character
-        self.screen=pygame.display.set_mode(Resolution)
+        self.screen=pygame.display.set_mode(Resolution,pygame.RESIZABLE)
         self.clock=pygame.time.Clock()
 
     def event_handler(self,event):

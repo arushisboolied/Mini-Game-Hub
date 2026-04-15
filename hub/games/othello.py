@@ -155,14 +155,16 @@ class Othello(Game):
         counter2=str(np.sum(self.Board==0))
         box=pygame.transform.scale(self.assets.timer,(200*self.Resolution[0]/1280,100*self.Resolution[1]/720))
         rect=box.get_rect()
-        rect.center=self.assets.Counter1center
+        Counter1center=list(np.array(self.assets.Counter1center)*np.array(self.Resolution)/np.array([1280,720]))
+        rect.center=Counter1center
         counter1=self.assets.text.render(counter1,True,(255,255,255))
         text_center=(rect.center[0],rect.center[1]+5)
         text_rect=counter1.get_rect(center=text_center)
         self.screen.blit(box,rect)        
         self.screen.blit(counter1,text_rect)
-        
-        rect.center=self.assets.Counter2center
+
+        Counter2center=list(np.array(self.assets.Counter2center)*np.array(self.Resolution)/np.array([1280,720]))
+        rect.center=Counter2center
         counter1=self.assets.text.render(counter2,True,(255,255,255))
         text_center=(rect.center[0],rect.center[1]+5)
         text_rect=counter1.get_rect(center=text_center)
