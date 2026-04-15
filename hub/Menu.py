@@ -10,15 +10,13 @@ import datetime
 import random
 
 class Menu:
-    def __init__(self,character=1,Resolution=(1280,720)):
+    def __init__(self,character=0,Resolution=(1280,720)):
         pygame.init()
         pygame.font.init()
         self.Resolution=Resolution
         self.character=character
         self.screen=pygame.display.set_mode(Resolution)
         self.clock=pygame.time.Clock()
-        background=pygame.image.load("./hub/Assets/Images/Background1.jpg").convert()
-        self.background=pygame.transform.scale(background,Resolution)
 
     def event_handler(self,event):
         pass
@@ -26,6 +24,7 @@ class Menu:
     def run(self):
         running=True
         while running:
+            self.clock.tick(60)
             for event in pygame.event.get():
                 if event.type==pygame.QUIT:
                     running=False
@@ -33,9 +32,6 @@ class Menu:
                     sys.exit()
                 else:
                     self.event_handler(event)
-            self.screen.fill((0,0,0))
-            self.screen.blit(self.background,(0,0))
             pygame.display.update()
-            self.clock.tick(60)
+            
 
-Menu().run()
