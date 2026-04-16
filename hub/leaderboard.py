@@ -55,23 +55,23 @@ def graphs(wins, games):
         ax.set_facecolor((0, 0, 0, 0))
 
     axs[0].bar(players, win_counts)
-    axs[0].set_title("Top Players", color="white")
-    axs[0].tick_params(colors='white')
+    axs[0].set_title("Top Players", color="black")
+    axs[0].tick_params(colors='black')
 
     wedges, texts, autotexts = axs[1].pie(
         game_values,
         labels=game_labels,
         autopct='%1.1f%%',
-        textprops={'color': 'white'}
+        textprops={'color': 'black'}
     )
     for text in texts:
         text.set_fontsize(10)
 
     for autotext in autotexts:
         autotext.set_fontsize(10)
-        autotext.set_color('white')
+        autotext.set_color('black')
 
-    axs[1].set_title("Games", color="white")
+    axs[1].set_title("Games", color="black")
 
     plt.tight_layout()
     plt.savefig("./hub/Assets/Images/Leaderboard.png", transparent=True, bbox_inches='tight', pad_inches=0)
@@ -85,52 +85,44 @@ def main():
     pygame.init()
 
     WIDTH, HEIGHT = 800, 600
-    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    screen = pygame.display.set_mode((WIDTH, HEIGHT),pygame.RESIZABLE)
     pygame.display.set_caption("Leaderboard")
 
-    background = pygame.image.load("./hub/Assets/Images/Background.png").convert()
+    background = pygame.image.load("./hub/Assets/Images/Background.jpeg").convert()
     leaderboard = pygame.image.load("./hub/Assets/Images/Leaderboard.png").convert_alpha()
-
-    quit_btn = pygame.image.load("./hub/Assets/Images/Quit.png").convert_alpha()
-    new_btn = pygame.image.load("./hub/Assets/Images/Next.png").convert_alpha()
+    new_btn = pygame.image.load("./hub/Assets/Images/NextGlow.png").convert_alpha()
 
     background = pygame.transform.scale(background, (WIDTH, HEIGHT))
-    leaderboard = pygame.transform.smoothscale(leaderboard, (580, 380))
+    leaderboard = pygame.transform.scale(leaderboard, (580, 380))
 
-    quit_btn = pygame.transform.smoothscale(quit_btn, (110, 90))
-    new_btn = pygame.transform.smoothscale(new_btn, (110, 90))
+    new_btn = pygame.transform.scale(new_btn, (100,88))
 
     leaderboard_rect = leaderboard.get_rect(center=(WIDTH//2, HEIGHT//2 - 30))
 
-    quit_rect = quit_btn.get_rect(bottomleft=(50, HEIGHT - 20))
-    new_rect = new_btn.get_rect(bottomright=(WIDTH - 50, HEIGHT - 20))
-
-    overlay = pygame.Surface((600, 400), pygame.SRCALPHA)
-    overlay.fill((0, 0, 0, 140))
-    overlay_rect = overlay.get_rect(center=leaderboard_rect.center)
-
+    new_rect = new_btn.get_rect(topleft=(700,299))
+    col_rect = pygame.Rect(725,323,51,34)
+    
     running = True
+    screen.blit(background, (0, 0))
+    screen.blit(leaderboard, leaderboard_rect)
+    bg_btn=screen.subsurface(new_rect).copy()
     while running:
-        screen.blit(background, (0, 0))
-
-        screen.blit(overlay, overlay_rect)
-        screen.blit(leaderboard, leaderboard_rect)
-
-        screen.blit(quit_btn, quit_rect)
-        screen.blit(new_btn, new_rect)
+        
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                if quit_rect.collidepoint(event.pos):
-                    running = False
-
+                print(pygame.mouse.get_pos())
                 if new_rect.collidepoint(event.pos):
                     subprocess.Popen(["python", "menu.py"])
                     running = False
 
+            if col_rect.collidepoint(pygame.mouse.get_pos()):
+                screen.blit(new_btn, new_rect)
+            else:
+                screen.blit(bg_btn, new_rect)
         pygame.display.flip()
 
     pygame.quit()
