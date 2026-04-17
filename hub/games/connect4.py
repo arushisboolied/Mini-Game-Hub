@@ -68,4 +68,4 @@ class Connect4(Game):
                 self.update_board()
                  
 if __name__=="__main__":
-    Connect4(theme="dune").run()          
+    Connect4(theme="medieval").run()          

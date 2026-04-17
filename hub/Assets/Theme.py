@@ -93,6 +93,7 @@ class Theme:
                 self.token2=pygame.transform.scale(self.token2,self.token_size)
                 self.token3=pygame.image.load(os.path.join(os.path.dirname(__file__),"./Images/Othello3_medieval.png")).convert_alpha()
                 self.token3=pygame.transform.scale(self.token3,self.token_size)
+                self.token3.set_alpha(200)
 
                 self.Counter1center=220,200
                 self.Counter2center=1060,200
