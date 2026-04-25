@@ -158,8 +158,31 @@ def main():
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 print(pygame.mouse.get_pos())
                 if new_rect.collidepoint(event.pos):
-                    subprocess.Popen(["python", "menu.py"])
+                    subprocess.Popen(["python3", "./hub/Menu.py"])
                     running = False
+
+            elif event.type == pygame.VIDEORESIZE:
+                WIDTH, HEIGHT = event.w, event.h
+                screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.RESIZABLE)
+                raw_background = pygame.image.load("./hub/Assets/Images/Background.png").convert()
+                raw_histogram  = pygame.image.load("./hub/Assets/Images/Histogram.png").convert_alpha()
+                raw_piechart   = pygame.image.load("./hub/Assets/Images/Piechart.png").convert_alpha()
+                raw_new_btn   = pygame.image.load("./hub/Assets/Images/NextGlow.png").convert_alpha()
+
+                background = pygame.transform.scale(raw_background, (WIDTH, HEIGHT))
+                histogram  = pygame.transform.scale(raw_histogram,  (int(WIDTH * 0.45), int(HEIGHT * 0.38)))
+                piechart   = pygame.transform.scale(raw_piechart,   (int(WIDTH * 0.225), int(HEIGHT * 0.30)))
+                new_btn    = pygame.transform.scale(raw_new_btn,   (int(WIDTH * 0.125), int(HEIGHT * 0.147)))
+
+                histogram_rect = histogram.get_rect(topleft=(int(WIDTH * 0.15), int(HEIGHT * 0.133)))
+                piechart_rect = piechart.get_rect(bottomright=(int(WIDTH * 0.85), int(HEIGHT * 0.75)))
+                new_rect = new_btn.get_rect(topleft=(int(WIDTH * 0.875), int(HEIGHT * 0.498)))
+                col_rect = pygame.Rect(int(WIDTH * 0.906), int(HEIGHT * 0.538), int(WIDTH * 0.063), int(HEIGHT * 0.056))
+
+                screen.blit(background, (0, 0))
+                screen.blit(histogram, histogram_rect)
+                screen.blit(piechart, piechart_rect)
+                bg_btn = screen.subsurface(new_rect).copy()
 
             if col_rect.collidepoint(pygame.mouse.get_pos()):
                 screen.blit(new_btn, new_rect)
