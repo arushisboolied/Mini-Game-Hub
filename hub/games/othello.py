@@ -120,6 +120,7 @@ class Othello(Game):
             if not self.has_valid_moves(self.current_player):
                 self.switch_turns()
                 if not self.has_valid_moves(self.current_player):
+                    self.tie = True
                     self.end = True
                     self.running = False
 
