@@ -1,18 +1,13 @@
 import pygame
 import matplotlib.pyplot as plt
 import matplotlib.patheffects as path_effects
-import matplotlib.animation as animation
-import numpy as np
-import os
 import sys
-import time
-import pathlib
 import subprocess
-import datetime
-import random
+
 
 
 ######################### CSV FILE READER #########################
+
 def read_history():
     data = []
     with open("./hub/history.csv", "r") as f:
@@ -28,6 +23,7 @@ def read_history():
             })
     return data
 
+
 def stat_calculation(data):
     wins = {}
     games = []
@@ -41,17 +37,25 @@ def stat_calculation(data):
     return wins, games
 
 
+
 ######################### GRAPHS CREATION #########################
+
 def graphs(wins, games):
+
+    ##### FONTS FOR READABILITY #####
 
     plt.rcParams.update({
         "font.family": "DejaVu Sans",
         "font.size": 12,
     })
 
+    ##### HISTOGRAM DATA #####
+
     sorted_players = sorted(wins.items(), key=lambda x: x[1], reverse=True)[:5]
     players = [p[0] for p in sorted_players]
     win_counts = [p[1] for p in sorted_players]
+
+    ##### PIE CHART DATA #####
 
     game_counts = {}
     for g in games:
@@ -59,6 +63,8 @@ def graphs(wins, games):
 
     game_labels = list(game_counts.keys())
     game_values = list(game_counts.values())
+
+    ##### PLOTTING THE HISTOGRAM #####
 
     fig, ax = plt.subplots(figsize=(6, 3), dpi=300)
     fig.patch.set_alpha(0)
@@ -83,6 +89,8 @@ def graphs(wins, games):
     plt.tight_layout()
     plt.savefig("./hub/Assets/Images/Histogram.png", transparent=True, bbox_inches='tight', pad_inches=0)
     plt.close()
+
+    ##### PLOTTING THE PIE CHART #####
 
     fig, ax = plt.subplots(figsize=(4, 4), dpi=300)
     fig.patch.set_alpha(0)
@@ -114,7 +122,9 @@ def graphs(wins, games):
     plt.close()
 
 
+
 ######################### MAIN FUNCTION #########################
+
 def main():
     data = read_history()
     wins, games = stat_calculation(data)
@@ -122,9 +132,13 @@ def main():
 
     pygame.init()
 
+    ##### PYGAME WINDOW SETUP #####
+
     WIDTH, HEIGHT = 800, 600
     screen = pygame.display.set_mode((WIDTH, HEIGHT),pygame.RESIZABLE)
     pygame.display.set_caption("Leaderboard")
+
+    ##### ASSETS #####
 
     background = pygame.image.load("./hub/Assets/Images/Background.png").convert()
     histogram = pygame.image.load("./hub/Assets/Images/Histogram.png").convert_alpha()
@@ -142,6 +156,8 @@ def main():
 
     new_rect = new_btn.get_rect(topleft=(700,299))
     col_rect = pygame.Rect(725,323,51,34)
+
+    ##### MAIN LOOP #####
     
     running = True
     screen.blit(background, (0, 0))
@@ -155,11 +171,14 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
 
+            ##### REDIRECTION EVENT HANDLER #####
+
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                print(pygame.mouse.get_pos())
                 if new_rect.collidepoint(event.pos):
                     subprocess.Popen(["python3", "./hub/Menu.py"])
                     running = False
+
+            ##### HANDLE WINDOW RESIZE #####
 
             elif event.type == pygame.VIDEORESIZE:
                 WIDTH, HEIGHT = event.w, event.h
