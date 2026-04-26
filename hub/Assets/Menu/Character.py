@@ -5,21 +5,23 @@ from Test import *
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self,pos,group,obstacles,interactive):
+    def __init__(self,pos,group,obstacles,regions):
         super().__init__(group)
-        self.player_idle_assets=[[i,pygame.transform.scale(pygame.image.load(r"./Tiny_Swords/Units/Blue_Units/Warrior/Warrior_Idle/row-1-column-"+str(i)+r".png").convert_alpha(),(128,128))] for i in range(1,9)]
-        self.player_run_assets=[[i,pygame.transform.scale(pygame.image.load(r"./Tiny_Swords/Units/Blue_Units/Warrior/Warrior_Run/row-1-column-"+str(i)+r".png").convert_alpha(),(128,128))] for i in range(1,7)]
+        self.player_idle_assets=[[i,pygame.transform.scale(pygame.image.load(r"./Tiny_Swords/Units/Blue_Units/Warrior/Warrior_Idle/row-1-column-"+str(i)+r".png").convert_alpha(),(192,192))] for i in range(1,9)]
+        self.player_run_assets=[[i,pygame.transform.scale(pygame.image.load(r"./Tiny_Swords/Units/Blue_Units/Warrior/Warrior_Run/row-1-column-"+str(i)+r".png").convert_alpha(),(192,192))] for i in range(1,7)]
         self.animation_index=0
         self.image=self.player_idle_assets[self.animation_index][1]
-        self.image=pygame.transform.scale(self.image,(128,128))
         self.rect=self.image.get_rect(topleft=pos).copy()
-        self.hitbox=self.rect.inflate(-110,-118).move(0,12)
+        self.hitbox=self.rect.inflate(-144,-160)
+        self.hitbox.y+=32
         self.direction=pygame.math.Vector2()
         self.speed=5
         self.status='right'
 
         self.obstacles=obstacles
-        self.interactive=interactive
+        self.regions=regions
+
+        self.Region="Spawn"
 
     def input(self):
         keys=pygame.key.get_pressed()
@@ -50,6 +52,25 @@ class Player(pygame.sprite.Sprite):
             if pygame.rect.Rect.colliderect(hitbox,sprite.rect):
                 return True
              
+    def region_change(self,hitbox):
+        
+        for sprite in self.regions[0]:
+            if pygame.rect.Rect.colliderect(hitbox,sprite.rect):
+                self.Region="Spawn"
+                return 0
+        for sprite in self.regions[1]:
+            if pygame.rect.Rect.colliderect(hitbox,sprite.rect):
+                self.Region="Settings"
+                return 0
+        for sprite in self.regions[2]:
+            if pygame.rect.Rect.colliderect(hitbox,sprite.rect):
+                self.Region="Game_Selection"
+                return 0
+        for sprite in self.regions[3]:
+            if pygame.rect.Rect.colliderect(hitbox,sprite.rect):
+                self.Region="Hinterland"
+                return 0                   
+
     def move(self,speed):
 
         if self.direction.magnitude()!=0:
@@ -63,7 +84,7 @@ class Player(pygame.sprite.Sprite):
             pass
         else:
             self.rect.center+=self.direction_speed*speed
-            self.hitbox.center+=self.direction_speed*speed   
+            self.hitbox.center+=self.direction_speed*speed
 
     def animate(self):
         self.animation_index=self.animation_index+0.15
@@ -79,13 +100,14 @@ class Player(pygame.sprite.Sprite):
             self.image=self.player_idle_assets[int(self.animation_index)%8][1]
         
         self.rect=self.image.get_rect(center=self.hitbox.center)
+        self.rect.y-=32
 
     def update(self):
+
         self.input()
         self.move(self.speed)
-        
+        self.region_change(self.hitbox)        
         self.get_status()
-
         self.animate()
 
         

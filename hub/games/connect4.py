@@ -12,17 +12,23 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from game import Game
 
 class Connect4(Game):
+
     def __init__(self,game_name="Connect4", players=("Mohit","Arush"), Resolution=(1280,720), theme="medieval", Characters=(0,1)):
-        super().__init__(game_name,players, Resolution, theme, Characters)      
+
+        super().__init__(game_name,players, Resolution, theme, Characters)
+
         self.Board=np.ones(49,dtype=int).reshape(7,7)*(-1)
 
     def win_check(self):
         x,y=self.current_move
+
         checker=np.ones(4,dtype=int)*(self.current_player)
+
         if (self.Board[x,0:4]==checker).all() or (self.Board[x,1:5]==checker).all() or (self.Board[x,2:6]==checker).all() or (self.Board[x,3:7]==checker).all():
             return True
         if (self.Board[0:4,y]==checker).all() or (self.Board[1:5,y]==checker).all() or (self.Board[2:6,y]==checker).all() or (self.Board[3:7,y]==checker).all():
             return True
+        
         Diag1=np.diagonal(self.Board,offset=y-x)
         Board2=np.fliplr(self.Board)
         Diag2=np.diagonal(Board2,offset=6-x-y)

@@ -1,14 +1,28 @@
 import csv
 
-with open(r"./Map_Collisions.csv","r") as f:
+with open(r"Map_Boundary.csv","r") as f:
     reader=csv.reader(f)
 
     Obstacle_Map=list(reader)
 
-with open(r"./Map_Specific_Collisions.csv","r") as f:
+with open(r"Map_Regions.csv","r") as f:
     reader=csv.reader(f)
+    Region_Map=list(reader)
 
-    Specific_Obstacle_Map=list(reader)
+def speed(n):
+    pass
+
+def change_char(n,o):
+    pass
+
+def change_Theme(n):
+    pass
+
+def call_game(n):
+    pass
+
+def message():
+    pass
 
 Test_Map=[
 ['x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x'],
@@ -32,3 +46,16 @@ Test_Map=[
 ['x',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','x'],
 ['x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x'],]
 
+Interactive=[
+
+    {"Zone":"Speed","pos":(1088,1296),"size":(96,96),"action":lambda x: speed(x)},
+    {"Zone":"Menu_Char","pos":(1088,1488),"size":(96,96),"action":lambda x: change_char(0,x)},
+    {"Zone":"User1_Char","pos":(1088,1680),"size":(96,96),"action":lambda x: change_char(1,x)},
+    {"Zone":"User2_char","pos":(1088,1888),"size":(96,96),"action":lambda x: change_char(2,x)},
+    {"Zone":"Theme","pos":(1088,2096),"size":(96,96),"action":lambda x: change_Theme(x)},
+    {"Zone":"Tictactoe","pos":(2832,192),"size":(208,160),"action":call_game(0)},
+    {"Zone":"Connect4","pos":(3392,192),"size":(256,160),"action":call_game(1)},
+    {"Zone":"Othello","pos":(4048,176),"size":(240,176),"action":call_game(2)},
+    {"Zone":"Easter_Egg","pos":(4832,144),"size":(144,80),"action":message()}
+    
+    ]

@@ -12,10 +12,14 @@ class Menu:
         self.screen=pygame.display.set_mode(Resolution,pygame.RESIZABLE)
         self.clock=pygame.time.Clock()
         self.level=Level()
+        #self.Menu_png=pygame.transform.scale(pygame.image.load("./Menu.png").convert_alpha(), (self.Resolution[0]*0.2, self.Resolution[1]*0.2))
+
         
 
     def event_handler(self,event):
-        pass
+        if event.type==pygame.KEYDOWN:
+            if event.key==pygame.K_e and self.level.check_zones():
+                self.level.settings_toggle()
 
     def run(self):
         running=True
@@ -29,8 +33,10 @@ class Menu:
                     sys.exit()
                 else:
                     self.event_handler(event)
+
             self.screen.fill("black")
             self.level.run()
+            #self.screen.blit(self.Menu_png,(0,0))
             pygame.display.update()
             
 
