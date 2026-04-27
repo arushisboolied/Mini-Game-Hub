@@ -7,10 +7,20 @@ from Test import *
 class Player(pygame.sprite.Sprite):
     def __init__(self,pos,group,obstacles,regions):
         super().__init__(group)
-        self.player_idle_assets=[[i,pygame.transform.scale(pygame.image.load(r"./Tiny_Swords/Units/Blue_Units/Warrior/Warrior_Idle/row-1-column-"+str(i)+r".png").convert_alpha(),(192,192))] for i in range(1,9)]
-        self.player_run_assets=[[i,pygame.transform.scale(pygame.image.load(r"./Tiny_Swords/Units/Blue_Units/Warrior/Warrior_Run/row-1-column-"+str(i)+r".png").convert_alpha(),(192,192))] for i in range(1,7)]
+        self.character_selection=0
+        self.character=[
+        [
+            [[i,pygame.transform.scale(pygame.image.load(r"./Tiny_Swords/Units/Blue_Units/Warrior/Warrior_Idle/row-1-column-"+str(i)+r".png").convert_alpha(),(192,192))] for i in range(1,9)],
+            [[i,pygame.transform.scale(pygame.image.load(r"./Tiny_Swords/Units/Blue_Units/Warrior/Warrior_Run/row-1-column-"+str(i)+r".png").convert_alpha(),(192,192))] for i in range(1,7)]
+        ],
+        [
+            [[i,pygame.transform.scale(pygame.image.load(r"./Tiny_Swords/Units/Red_Units/Warrior/Warrior_Idle/row-1-column-"+str(i)+r".png").convert_alpha(),(192,192))] for i in range(1,9)],
+            [[i,pygame.transform.scale(pygame.image.load(r"./Tiny_Swords/Units/Red_Units/Warrior/Warrior_Run/row-1-column-"+str(i)+r".png").convert_alpha(),(192,192))] for i in range(1,7)]
+        ]
+        ]
+        
         self.animation_index=0
-        self.image=self.player_idle_assets[self.animation_index][1]
+        self.image=self.character[self.character_selection][0][int(self.animation_index)%8][1]
         self.rect=self.image.get_rect(topleft=pos).copy()
         self.hitbox=self.rect.inflate(-144,-160)
         self.hitbox.y+=32
@@ -22,6 +32,8 @@ class Player(pygame.sprite.Sprite):
         self.regions=regions
 
         self.Region="Spawn"
+
+        self.zone=None
 
     def input(self):
         keys=pygame.key.get_pressed()
@@ -89,18 +101,29 @@ class Player(pygame.sprite.Sprite):
     def animate(self):
         self.animation_index=self.animation_index+0.15
         if self.status=='right_move':
-            self.image=self.player_run_assets[int(self.animation_index)%6][1]
+            self.image=self.character[self.character_selection][1][int(self.animation_index)%6][1]
         elif self.status=='left_move':
-            self.image=self.player_run_assets[int(self.animation_index)%6][1]
+            self.image=self.character[self.character_selection][1][int(self.animation_index)%6][1]
             self.image=pygame.transform.flip(self.image,flip_x=True,flip_y=False)
         elif self.status=='left_idle':
-            self.image=self.player_idle_assets[int(self.animation_index)%8][1]
+            self.image=self.character[self.character_selection][0][int(self.animation_index)%8][1]
             self.image=pygame.transform.flip(self.image,flip_x=True,flip_y=False)
         elif self.status=='right_idle':
-            self.image=self.player_idle_assets[int(self.animation_index)%8][1]
+            self.image=self.character[self.character_selection][0][int(self.animation_index)%8][1]
         
         self.rect=self.image.get_rect(center=self.hitbox.center)
         self.rect.y-=32
+
+    def check_zones(self):
+        for zone in Interactive:
+            x, y = zone["pos"]
+            w, h = zone["size"]
+            zone_rect = pygame.Rect(x, y, w, h)
+
+            if self.hitbox.colliderect(zone_rect):
+                self.zone=zone
+                return True
+        return False
 
     def update(self):
 

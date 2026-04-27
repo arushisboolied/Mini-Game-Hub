@@ -46,16 +46,18 @@ Test_Map=[
 ['x',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','x'],
 ['x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x'],]
 
+Theme_mapping={0: "The Witcher", 1: "Blade Runner", 2: "Dune"}
+
 Interactive=[
 
-    {"Zone":"Speed","pos":(1088,1296),"size":(96,96),"action":lambda x: speed(x)},
-    {"Zone":"Menu_Char","pos":(1088,1488),"size":(96,96),"action":lambda x: change_char(0,x)},
-    {"Zone":"User1_Char","pos":(1088,1680),"size":(96,96),"action":lambda x: change_char(1,x)},
-    {"Zone":"User2_char","pos":(1088,1888),"size":(96,96),"action":lambda x: change_char(2,x)},
-    {"Zone":"Theme","pos":(1088,2096),"size":(96,96),"action":lambda x: change_Theme(x)},
-    {"Zone":"Tictactoe","pos":(2832,192),"size":(208,160),"action":call_game(0)},
-    {"Zone":"Connect4","pos":(3392,192),"size":(256,160),"action":call_game(1)},
-    {"Zone":"Othello","pos":(4048,176),"size":(240,176),"action":call_game(2)},
-    {"Zone":"Easter_Egg","pos":(4832,144),"size":(144,80),"action":message()}
+    {"Zone":"Speed","pos":(1088,1296),"size":(96,96)},
+    {"Zone":"Menu_Char","pos":(1088,1488),"size":(96,96)},
+    {"Zone":"User1_Char","pos":(1088,1680),"size":(96,96)},
+    {"Zone":"User2_Char","pos":(1088,1888),"size":(96,96)},
+    {"Zone":"Theme","pos":(1088,2096),"size":(96,96)},
+    {"Zone":"Tictactoe","pos":(2832,192),"size":(208,160)},
+    {"Zone":"Connect4","pos":(3392,192),"size":(256,160)},
+    {"Zone":"Othello","pos":(4048,176),"size":(240,176)},
+    {"Zone":"Easter_Egg","pos":(4832,144),"size":(144,80)}
     
     ]

@@ -32,21 +32,18 @@ class Level:
         self.create_boundary()
         self.create_regions()
 
-        self.Interaction_prompt_image=pygame.image.load("./Interaction.png").convert_alpha()
+        self.Interaction_prompt_image=pygame.image.load("./Interaction_Interaction.png").convert_alpha()
 
-        self.banners={"Spawn": pygame.image.load("./Spawn_Banner.png").convert_alpha(),
-                      "Settings": pygame.image.load("./Settings_Banner.png").convert_alpha(),
-                      "Game_Selection": pygame.image.load("./Game_Selection.png").convert_alpha(),
-                      "Hinterland": pygame.image.load("./Hinterlands.png").convert_alpha()}   
+        self.banners={
+                    "Spawn": pygame.image.load("./Spawn_Banner.png").convert_alpha(),
+                    "Settings": pygame.image.load("./Settings_Banner.png").convert_alpha(),
+                    "Game_Selection": pygame.image.load("./Game_Selection.png").convert_alpha(),
+                    "Hinterland": pygame.image.load("./Hinterlands.png").convert_alpha()
+                    }
+        self.game_theme=0   
 
-    def check_zones(self):
-        for zone in Interactive:
-            x, y = zone["pos"]
-            w, h = zone["size"]
-            zone_rect = pygame.Rect(x, y, w, h)
-
-            if self.player.hitbox.colliderect(zone_rect):
-                return True
+        self.User1_selection=0
+        self.User2_selection=0
 
     def create_boundary(self):
 
@@ -102,9 +99,9 @@ class Level:
         
           
         if not self.game_paused:     
-            if self.check_zones():
+            if self.player.check_zones():
                 self.Interaction_prompt_image=pygame.transform.scale(self.Interaction_prompt_image,(self.width*0.5,self.height*0.6))
-                rect=self.Interaction_prompt_image.get_rect(center=(self.width/2,self.height*0.85))
+                rect=self.Interaction_prompt_image.get_rect(center=(self.width/2,self.height*0.88))
                 self.display_surface.blit(self.Interaction_prompt_image, rect) 
             
             Banner=self.banners[self.player.Region]
@@ -114,7 +111,20 @@ class Level:
 
             self.Player.update()
             self.offset=self.player.rect.center
-            debug(self.player.Region)
+            debug(self.player.zone)
 
         else:
-            self.settings.display()
+
+            self.settings.zone=self.player.zone
+            self.settings.player_speed=self.player.speed
+            self.settings.character_selection=self.player.character_selection
+            self.settings.Menu_character=self.player.character
+            self.settings.theme=self.game_theme
+            self.settings.User1_character_selection=self.User1_selection
+            self.settings.User2_character_selection=self.User2_selection
+            self.settings.run()
+            self.User1_selection=self.settings.User1_character_selection
+            self.User2_selection=self.settings.User2_character_selection
+            self.game_theme=self.settings.theme
+            self.player.speed=self.settings.player_speed
+            self.player.character_selection=self.settings.character_selection
