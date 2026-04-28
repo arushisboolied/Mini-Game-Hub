@@ -1,83 +1,161 @@
-#!/bin/bash 
+#!/bin/bash
 
-touch "users.tsv"
+echo "__  __ ___ _   _ ___    ____    _    __  __ _____   _   _ _   _ ____  
+|  \/  |_ _| \ | |_ _|  / ___|  / \  |  \/  | ____| | | | | | | | __ ) 
+| |\/| || ||  \| || |  | |  _  / _ \ | |\/| |  _|   | |_| | | | |  _ \ 
+| |  | || || |\  || |  | |_| |/ ___ \| |  | | |___  |  _  | |_| | |_) |
+|_|  |_|___|_| \_|___|  \____/_/   \_\_|  |_|_____| |_| |_|\___/|____/ 
+"
 
-#hashing passwords
-hashing_passwords(){
+FILE="./hub/users.tsv"
+touch "$FILE"
+
+hash_password() {
     echo -n "$1" | sha256sum | awk '{print $1}'
 }
 
-#user existence
-user_existence(){
-    grep -q "^$1|" "users.tsv"
+is_alphanumeric() {
+    [[ "$1" =~ ^[a-zA-Z0-9]+$ ]]
 }
 
-#fetch hashed password
-fetch_hash(){
-    grep "^$1|" "users.tsv" | cut -d "|" -f2
+user_exists() {
+    grep -q "^$1	" "$FILE"
 }
 
-#registering users
-register_user(){
-    local username="$1"
-    local password="$2"
-    local hashed_password=$(hashing_passwords "$password")
-    echo "$username|$hashed_password" >> "users.tsv"
-    echo "User '$username' has been registered successfully."
+get_stored_hash() {
+    grep "^$1	" "$FILE" | cut -f2
 }
 
-#user authentication
-user_authentication(){
-    local username
-    local password
+register_user() {
+    local username=$1
+    local password=$2
+    local hash=$(hash_password "$password")
+    echo -e "$username\t$hash" >> "$FILE"
+}
+
+update_password() {
+    local username=$1
+    local new_hash=$2
+    awk -F'\t' -v user="$username" -v hash="$new_hash" 'BEGIN{OFS="\t"} $1==user {$2=hash} {print}' "$FILE" > temp && mv temp "$FILE"
+}
+
+delete_user() {
+    local username=$1
+    grep -v "^$username	" "$FILE" > temp && mv temp "$FILE"
+}
+
+secure_input() {
+    echo -n "$1"
+    read -s INPUT
+    echo
+}
+
+authenticate_user() {
     while true; do
-        echo -n " Enter Username: "
-        read username
+        read -p "Enter username: " username
 
-        if user_existence "$username"; then
-            echo -n " Enter Password: "
-            read -s password
-            echo
+        if ! is_alphanumeric "$username"; then
+            echo "Username must be alphanumeric only."
+            continue
+        fi
 
-            local hashed_input=$(hashing_passwords "$password")
-            local stored_hash=$(fetch_hash "$username")
+        secure_input "Enter password: "
+        password="$INPUT"
 
-            if [ "$hashed_input" == "$stored_hash" ]; then
-                echo "Authentication successful. Welcome, $username!"
-                break
+        if user_exists "$username"; then
+            stored_hash=$(get_stored_hash "$username")
+            input_hash=$(hash_password "$password")
+
+            if [ "$stored_hash" == "$input_hash" ]; then
+                echo "Login successful: $username"
+
+                while true; do
+                    echo "1) Continue"
+                    echo "2) Change Password"
+                    echo "3) Delete Account"
+                    read -p "Choose option: " opt
+
+                    case $opt in
+                        1)
+                            AUTH_USER="$username"
+                            return
+                            ;;
+                        2)
+                            secure_input "Enter current password: "
+                            curr="$INPUT"
+                            curr_hash=$(hash_password "$curr")
+
+                            if [ "$curr_hash" != "$stored_hash" ]; then
+                                echo "Incorrect current password."
+                                continue
+                            fi
+
+                            secure_input "Enter new password: "
+                            newpass="$INPUT"
+                            secure_input "Confirm new password: "
+                            confirm="$INPUT"
+
+                            if [ "$newpass" != "$confirm" ]; then
+                                echo "Passwords do not match."
+                                continue
+                            fi
+
+                            new_hash=$(hash_password "$newpass")
+                            update_password "$username" "$new_hash"
+                            stored_hash="$new_hash"
+                            echo "Password updated."
+                            ;;
+                        3)
+                            secure_input "Enter password to confirm deletion: "
+                            delpass="$INPUT"
+                            del_hash=$(hash_password "$delpass")
+
+                            if [ "$del_hash" != "$stored_hash" ]; then
+                                echo "Incorrect password."
+                                continue
+                            fi
+
+                            delete_user "$username"
+                            echo "Account deleted. Please register again."
+                            break
+                            ;;
+                        *)
+                            echo "Invalid option."
+                            ;;
+                    esac
+                done
+
             else
-                echo "Incorrect password. Please try again."
+                echo "Incorrect password. Try again."
             fi
+
         else
-            echo "Username '$username' does not exist."
-            echo -n " Do you want to register? (y/n): "
-            read response
-            if [[ "$response" == "y" ]]; then
-                echo -n " Enter Password for registration: "
-                read -s password
-                echo
+            read -p "User not found. Register? (y/n): " choice
+            if [ "$choice" == "y" ]; then
                 register_user "$username" "$password"
-                echo "$username"
+                echo "Registered successfully: $username"
+                AUTH_USER="$username"
                 return
             fi
         fi
     done
 }
 
-echo "---- Player 1 Authentication ----"
-user1=$(user_authentication)
-
-echo "---- Player 2 Authentication ----"
-user2=$(user_authentication)
+echo "=== Player 1 ==="
+authenticate_user
+user1="$AUTH_USER"
 
 while true; do
-    if [ "$user1" == "$user2" ]; then
-        echo "Both players cannot have the same username. Please re-authenticate Player 2."
-        user2=$(user_authentication)
-    else
+    echo "=== Player 2 ==="
+    authenticate_user
+    user2="$AUTH_USER"
+
+    if [ "$user1" != "$user2" ]; then
         break
+    else
+        echo "Usernames must be distinct. Try again."
     fi
 done
 
-echo "Both players authenticated successfully. Starting the game..."
-python3 game.py "$user1" "$user2"
+echo "Both users authenticated. Starting game..."
+python3 ./hub/main.py "$user1" "$user2"
