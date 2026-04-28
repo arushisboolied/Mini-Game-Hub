@@ -1,36 +1,24 @@
 import pygame
-import matplotlib as plt
 import numpy as np
 import os
 import sys
-import time
-import pathlib
-import subprocess
-import datetime
-import random
 
 sys.path.append(os.path.join(os.path.dirname(__file__),'./Assets'))
 from Theme import Theme
 
 """Things I need for a tictactoe game:
-    ~1.Board~
-    ~2.Characters/Players~
-    ~3.Way to check win~
-    ~4.Tokens~
-    ~5.Theme~
-    ~6.Size of Screen~
-    7.Winning Screen
+1.Winning Screen
 """
 class Game:
-    def __init__(self,game_name,players=("Mohit","Arush"),Resolution=(1280,720),theme="medieval",Characters=(0,1)):
+    def __init__(self,game_name,players=("Mohit","Arush"),theme="medieval",Characters=(0,1)):
         pygame.init()
         pygame.font.init()
         self.game_name=game_name
         self.players=players
-        self.Resolution=Resolution
         self.theme=theme
         self.Characters=Characters
-        self.screen=pygame.display.set_mode(Resolution,pygame.RESIZABLE)
+        self.screen=pygame.display.get_surface()
+        self.Resolution=self.screen.get_size()
         self.current_player=0
         self.clock=pygame.time.Clock()
         self.current_move=[-1,-1]
@@ -90,20 +78,25 @@ class Game:
     def timer(self):
         return int(pygame.time.get_ticks()//250)
 
-    def display_time(self):
-        timer_size=list(np.array(self.assets.timer_size)*np.array(self.Resolution)/np.array([1280,720]))
-        frame=pygame.transform.scale(self.assets.timer,timer_size)
-        self.time_elapsed=pygame.time.get_ticks()//1000
-        mins=self.time_elapsed//60
-        seconds=self.time_elapsed%60
-        Time=f"{mins:02}:{seconds:02}"
+    def Resign(self):
+
+        Frame_size=list(np.array(self.assets.timer_size)*np.array(self.Resolution)/np.array([1280,720]))
+        frame=pygame.transform.scale(self.assets.timer,Frame_size)
         loc1=list(np.array(self.assets.loc1)*np.array(self.Resolution)/np.array([1280,720]))
         self.screen.blit(frame,loc1)
         text=self.assets.text
-        text=text.render(Time,True,self.assets.text_colour)
-        timertextrect=text.get_rect()
-        timertextrect.center=list(np.array(self.assets.textloc)*np.array(self.Resolution)/np.array([1280,720]))
-        self.screen.blit(text,timertextrect)
+        text=text.render("Resign",True,self.assets.text_colour)
+        Resign_text_rect=text.get_rect()
+        Resign_text_rect.center=list(np.array(self.assets.textloc)*np.array(self.Resolution)/np.array([1280,720]))
+        self.screen.blit(text,Resign_text_rect)
+
+        mouse_pos=pygame.mouse.get_pos()
+        Resign_rect=frame.get_rect(topleft=loc1)
+        if Resign_rect.collidepoint(mouse_pos):
+            if pygame.mouse.get_pressed()[0]:
+                self.running=False
+                self.tie=False
+                self.switch_turns()
     
     def display_player_names(self):
 
@@ -165,14 +158,13 @@ class Game:
         while self.running:
             
             self.clock.tick(60)
-            self.redraw_tokens()  
-            self.display_time()  
-            self.display_game_name()      
+            self.redraw_tokens()   
+            self.display_game_name()  
+            self.Resign()    
 
             for event in pygame.event.get():
                 if event.type==pygame.QUIT:
-                    running=False
-                    sys.exit()
+                    self.running=False
                 elif event.type == pygame.VIDEORESIZE:    
                     self.Resolution = event.size
                     self.screen = pygame.display.set_mode(self.Resolution, pygame.RESIZABLE)

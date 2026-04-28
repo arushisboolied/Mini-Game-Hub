@@ -1,23 +1,16 @@
 import pygame
-import matplotlib as plt
 import numpy as np
 import os
 import sys
-import time
-import pathlib
-import subprocess
-import datetime
-import random
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from game import Game
 
 
 class Othello(Game):
 
-    def __init__(self, game_name="Othello", players=("Player1", "Player2"),
-                 Resolution=(1280, 720), theme="medieval", Characters=(0, 1)):
+    def __init__(self, game_name="Othello", players=("Player1", "Player2"), theme="medieval", Characters=(0, 1)):
 
-        super().__init__(game_name, players, Resolution, theme, Characters)
+        super().__init__(game_name, players, theme, Characters)
 
         self.Board = np.full((8, 8), -1, dtype=int)
 
