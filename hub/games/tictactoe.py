@@ -18,7 +18,7 @@ class TicTacToe(Game):
         #takes current move from event handler
         x,y=self.current_move
 
-        #checker is an array of 5 ones
+        #checker is an array of 5 ones/zeroes depending on which player is playing, used to check for 5 in a row
         checker=np.ones(5,dtype=int)*(self.current_player)
 
         #conditions for 5 continuous x or o along a row or column

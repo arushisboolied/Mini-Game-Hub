@@ -1,7 +1,7 @@
 import pygame
 import os,sys
 
-from Test import *
+from Support import *
 
 class Settings:
     def __init__(self):
@@ -14,6 +14,7 @@ class Settings:
         self.tictactoe_rules_image=pygame.image.load(TicTacToe_Rules_image_path).convert_alpha()
         self.connect4_rules_image=pygame.image.load(Connect4_Rules_image_path).convert_alpha()
         self.othello_rules_image=pygame.image.load(Othello_Rules_image_path).convert_alpha()
+        self.leaderboard_text=pygame.image.load(Leaderboard_text_path).convert_alpha()
         pygame.font.init()
         self.font=pygame.font.Font(Text_font_path, 30)
 
@@ -173,14 +174,27 @@ class Settings:
                 if keys[pygame.K_RETURN] or keys[pygame.K_KP_ENTER]:
                     self.current_game="Othello"
 
-        elif "Exit" in self.zone["Zone"]:
+        elif "Leaderboard" in self.zone["Zone"]:
             self.game_title_image=pygame.transform.scale(self.game_title_image,(Width*0.8,Height*0.4))
             rect=self.game_title_image.get_rect(center=(Width/2,Height*0.09))
             self.display_surface.blit(self.game_title_image, rect)
 
-            Text=self.font.render("Exit", True, "black")
+            Text=self.font.render("Leaderboard and Exit", True, "black")
             rect=Text.get_rect(center=(Width/2,Height*0.07))
             self.display_surface.blit(Text, rect)
+
+            self.leaderboard_text=pygame.transform.scale(self.leaderboard_text,(Width*1.3,Height*1.3))
+            rect=self.leaderboard_text.get_rect(center=(Width/2,Height*0.41))
+            self.display_surface.blit(self.leaderboard_text, rect) 
+
+            if keys[pygame.K_RETURN] or keys[pygame.K_KP_ENTER]:
+                self.current_game="Leaderboard"
+            elif keys[pygame.K_ESCAPE]:
+                self.current_game="Exit"
+
+
+
+
 
         self.Interaction_exit_prompt_image=pygame.transform.scale(self.Interaction_exit_prompt_image,(Width*0.5,Height*0.6))
         rect=self.Interaction_exit_prompt_image.get_rect(center=(Width/2,Height*0.88))

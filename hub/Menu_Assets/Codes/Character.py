@@ -1,5 +1,5 @@
 import pygame,os
-from Test import *
+from Support import *
 
 
 

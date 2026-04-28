@@ -5,11 +5,14 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'games/'))
 sys.path.append(os.path.join(os.path.dirname(__file__), 'Menu_Assets/Codes/'))
 
 from Level import Level
-from Test import *
+from Support import *
 
 from tictactoe import TicTacToe
 from othello import Othello
 from connect4 import Connect4
+
+User1=sys.argv[1]
+User2=sys.argv[2]
 
 class Menu:
     def __init__(self,Resolution=(1280,720)):
@@ -45,16 +48,27 @@ class Menu:
             if self.level.settings.current_game!=None:
 
                 if self.level.settings.current_game=="Tictactoe":
-                    TicTacToe(theme=Theme_mapping[self.level.game_theme]).run()
+                    TicTacToe(theme=Theme_mapping[self.level.game_theme],Characters=(self.level.User1_selection,self.level.User2_selection),players=(User1,User2)).run()
 
                 elif self.level.settings.current_game=="Connect4":
-                    Connect4(theme=Theme_mapping[self.level.game_theme]).run()
+                    Connect4(theme=Theme_mapping[self.level.game_theme],Characters=(self.level.User1_selection,self.level.User2_selection),players=(User1,User2)).run()
 
                 elif self.level.settings.current_game=="Othello":
-                    Othello(theme=Theme_mapping[self.level.game_theme]).run()
+                    Othello(theme=Theme_mapping[self.level.game_theme],Characters=(self.level.User1_selection,self.level.User2_selection),players=(User1,User2)).run()
+
+                elif self.level.settings.current_game=="Leaderboard":
+                    print("Leaderboard called")
+                elif self.level.settings.current_game=="Exit":
+                    running=False
+                    pygame.quit()
+                    sys.exit()
 
                 self.level.settings.current_game=None
                 self.level.game_paused=False
+
+            if self.level.call_leaderboard:
+                print("Leaderboard called")
+                self.level.call_leaderboard=False
             pygame.display.update()
             
 
