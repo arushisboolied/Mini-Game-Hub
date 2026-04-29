@@ -87,11 +87,14 @@ class Menu:
                         with open("hub/history.csv", "a") as f:
                             writer=csv.writer(f)
                             if status[1]:
-                                writer.writerow([User1, User2, datetime.datetime.now(), current_game])
-                            else:
                                 writer.writerow([User2, User1, datetime.datetime.now(), current_game])
+                            else:
+                                writer.writerow([User1, User2, datetime.datetime.now(), current_game])
                     from Game_Over import Game_Over
-                    Game_Over(status[0], User1, User2,current_game).run()
+                    if status[1]:
+                        Game_Over(status[0], User2, User1,current_game).run()
+                    else:
+                        Game_Over(status[0], User1, User2,current_game).run()
                     stats_main()  # Update stats after every game                  
                     
                 

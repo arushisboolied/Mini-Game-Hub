@@ -62,10 +62,10 @@ class Game_Over:
         message_pad = 32
         
         #Message
-        if self.condition:
-            if self.condition == "win":
+        if self.condition!=None:
+            if not self.condition:
                 message = f"Congratulations {self.winner}! You have won the game. Better luck next time, {self.loser}!"
-            elif self.condition == "draw":
+            else:
                 message = f"It's a draw between {self.winner} and {self.loser}! Well played to both of you!"
         else:
             message = f"Choose Sort Criterion for the Leaderboard"
