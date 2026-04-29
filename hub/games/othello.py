@@ -6,9 +6,12 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from game import Game
 
 
+
 class Othello(Game):
 
-    def __init__(self, game_name="Othello", players=("Player1", "Player2"), theme="medieval", Characters=(0, 1)):
+    #################### INITIALIZATION OF BOARD ####################
+    def __init__(self, game_name="Othello", players=("Player1", "Player2"),
+                 Resolution=(1280, 720), theme="medieval", Characters=(0, 1)):
 
         super().__init__(game_name, players, theme, Characters)
 
@@ -29,6 +32,10 @@ class Othello(Game):
 
         self.current_move = [-1, -1]
         self.update_board()
+
+
+
+    #################### LEGAL MOVE CHECKER ####################
 
     def is_on_board(self, x, y):
         return 0 <= x < 8 and 0 <= y < 8
@@ -53,6 +60,9 @@ class Othello(Game):
 
         return False
     
+
+    
+    #################### ALL VALID MOVES FOR CURRENT PLAYER ####################
     def valid_moves(self, player):
         moves = []
         token_size=list(np.array(self.assets.token_size)*np.array(self.Resolution)/np.array([1280,720]))
@@ -69,7 +79,7 @@ class Othello(Game):
         
         self.counter()
         
-
+    #################### FLIP OPPONENT'S PIECES ####################
     def flip_pieces(self, x, y, player):
         opponent = 1 - player
 
@@ -88,6 +98,9 @@ class Othello(Game):
 
         self.Board[x][y] = player
 
+
+
+    #################### CHECK FOR WIN CONDITIONS ####################
     def has_valid_moves(self, player):
         for y in range(8):
             for x in range(8):
@@ -100,6 +113,9 @@ class Othello(Game):
             self.end = True
 
 
+
+
+    #################### UPDATE BOARD AFTER A MOVE ####################
     def update_board(self):
 
         x, y = self.current_move
@@ -113,11 +129,15 @@ class Othello(Game):
             if not self.has_valid_moves(self.current_player):
                 self.switch_turns()
                 if not self.has_valid_moves(self.current_player):
+                    self.tie = True
                     self.end = True
                     self.running = False
 
             self.win_check()
 
+
+
+    #################### HANDLE MOUSE CLICK EVENTS ####################
     def event_handler(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
 
@@ -143,6 +163,9 @@ class Othello(Game):
                 self.current_move = [grid_x, grid_y]
                 self.update_board()
     
+
+
+    #################### COUNTER DISPLAY FUNCTION ####################
     def counter(self):
         counter1=str(np.sum(self.Board==1))
         counter2=str(np.sum(self.Board==0))
