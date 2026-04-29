@@ -196,7 +196,7 @@ class Theme:
                 self.token3=image_load_scale("./Images/Othello3_Future.png",self.token_size)
 
                 #token3 is used to indicate valid moves for the current player in Othello, it is a transparent version of the current player's token
-                self.token3.set_alpha(200)
+                self.token3.set_alpha(100)
 
                 #Positions for no. of pieces for each player in Othello
                 self.Counter_1_center=(220,200)

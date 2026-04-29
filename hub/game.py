@@ -14,11 +14,11 @@ class Game:
         pygame.init()
         pygame.font.init()
         self.game_name=game_name
-        self.Resolution=Resolution
         self.players=players
         self.theme=theme
         self.Characters=Characters
-        self.screen=pygame.display.set_mode(self.Resolution,pygame.RESIZABLE)
+        self.screen=pygame.display.get_surface()
+        self.Resolution=self.screen.get_size()
         self.current_player=0
         self.clock=pygame.time.Clock()
         self.current_move=[-1,-1]
