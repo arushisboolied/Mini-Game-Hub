@@ -3,21 +3,24 @@ declare -A stats
 
 echo -e " _     _____    _    ____  _____ ____  ____   ___    _    ____  ____  \n| |   | ____|  / \  |  _ \| ____|  _ \| __ ) / _ \  / \  |  _ \|  _ \ \n| |   |  _|   / _ \ | | | |  _| | |_) |  _ \| | | |/ _ \ | |_) | | | |\n| |___| |___ / ___ \| |_| | |___|  _ <| |_) | |_| / ___ \|  _ <| |_| |\n|_____|_____/_/   \_\____/|_____|_| \_\____/ \___/_/   \_\_| \_\____/ "
 
-
+#Game Names
 for ((i=0;i<$(($#-4));i++)); do 
     var=$((i+5))
     Games[$i]=${!var}
 done
 
-x=$(cut -d ',' -f1,4 $1 | sort | uniq -c|awk '{print $1,$2}'|tr ' ' ','|tr -d '\r')
-y=$(cut -d ',' -f2,4 $1 | sort | uniq -c|awk '{print $1,$2}'|tr ' ' ','|tr -d '\r')
-Users=$(cut -f1 "$2")   # use tab delimiter if it's a .tsv; skip header if any
+x=$(cut -d ',' -f1,4 $1 | sort | uniq -c|awk '{print $1,$2}'|tr ' ' ','|tr -d '\r') #Winners in a game
+y=$(cut -d ',' -f2,4 $1 | sort | uniq -c|awk '{print $1,$2}'|tr ' ' ','|tr -d '\r') #Losers in a game
+Users=$(cut -f1 "$2")   # Users from users.tsv
 
 n=0
+#Creates lists of Users
 while read -r line ; do
     usr_lists[$n]=$line
     ((n++))
 done <<< "$Users"
+
+#Stats stores an associative array of player game and win/loss
 while IFS=',' read -r wins winner game ; do
     stats["${winner}_${game}_wins"]=$wins
 done <<< "$x"
@@ -26,6 +29,7 @@ while IFS=',' read -r losses loser game ; do
     stats["${loser}_${game}_losses"]=$losses
 done <<< "$y"
 
+#For users and games whose losses and wins are not defined and also add ratios , also total wins/losses and ratios
 for ((i=0;i<n;i++)); do
 
     user=${usr_lists[$i]}
@@ -54,11 +58,14 @@ for ((i=0;i<n;i++)); do
 
     Final_stats[$i]="$user${Final_stats[$i]},$total_wins,$total_losses,$total_ratio"
 done
-
+#Criterias
 criteria=$(($4))
 game_criteria=$(($3-1))
 actual_criteria=$(($game_criteria*3+$criteria+1))
+
 Games[$(($#-4))]="Total"
+
+#Printing prettily
 echo ${Final_stats[@]}|tr ' ' '\n'|sort -t ',' -k${actual_criteria},${actual_criteria}rg -k1,1|awk -F',' 'BEGIN { OFS="," }
 {
     for (i = 2; i <= NF; i++) {

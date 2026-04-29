@@ -7,6 +7,8 @@ from Support import *
 class Player(pygame.sprite.Sprite):
     def __init__(self,pos,group,obstacles,regions):
         super().__init__(group)
+
+        # For Which frame of character to display
         self.character_selection=0
         self.character=[
         [
@@ -18,21 +20,25 @@ class Player(pygame.sprite.Sprite):
             [[i,pygame.transform.scale(pygame.image.load(f"{Character_Selection_image_parent_path}/Red_Units/Warrior/Warrior_Run/row-1-column-{i}.png").convert_alpha(),(192,192))] for i in range(1,7)]
         ]
         ]
-        
+
+        #Which animation frame
         self.animation_index=0
         self.image=self.character[self.character_selection][0][int(self.animation_index)%8][1]
+        #Hitbox and display box
         self.rect=self.image.get_rect(topleft=pos).copy()
         self.hitbox=self.rect.inflate(-144,-160)
         self.hitbox.y+=32
+        #Direction of player
         self.direction=pygame.math.Vector2()
         self.speed=10
+        #For displaying which image of player
         self.status='right'
 
         self.obstacles=obstacles
         self.regions=regions
 
         self.Region="Spawn"
-
+        #Interactive Zone
         self.zone=None
 
     def input(self):
@@ -42,6 +48,7 @@ class Player(pygame.sprite.Sprite):
         self.direction.x=int((keys[pygame.K_RIGHT] or keys[pygame.K_d])-(keys[pygame.K_LEFT] or keys[pygame.K_a]))
 
     def get_status(self):
+        #If moving, idle or facing where
         if self.direction.x==1:
             self.status='right'
         elif self.direction.x==-1:
@@ -59,12 +66,13 @@ class Player(pygame.sprite.Sprite):
                 else:
                     self.status+='_move'
 
-    def collisions(self,hitbox):
+    def collisions(self,hitbox): #For collisions
         for sprite in self.obstacles:
             if pygame.rect.Rect.colliderect(hitbox,sprite.rect):
                 return True
              
     def region_change(self,hitbox):
+        #To detect region change
         
         for sprite in self.regions[0]:
             if pygame.rect.Rect.colliderect(hitbox,sprite.rect):
@@ -84,7 +92,7 @@ class Player(pygame.sprite.Sprite):
                 return 0                   
 
     def move(self,speed):
-
+        #To move depending on collisions
         if self.direction.magnitude()!=0:
             self.direction_speed=self.direction.normalize()
         else:
@@ -99,6 +107,7 @@ class Player(pygame.sprite.Sprite):
             self.hitbox.center+=self.direction_speed*speed
 
     def animate(self):
+        #Animation frames
         self.animation_index=self.animation_index+0.15
         if self.status=='right_move':
             self.image=self.character[self.character_selection][1][int(self.animation_index)%6][1]
@@ -115,6 +124,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.y-=32
 
     def check_zones(self):
+        #Check which interactive zone
         for zone in Interactive:
             x, y = zone["pos"]
             w, h = zone["size"]
@@ -126,6 +136,7 @@ class Player(pygame.sprite.Sprite):
         return False
 
     def update(self):
+        #Update status and all properties of Player
 
         self.input()
         self.move(self.speed)

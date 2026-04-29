@@ -8,6 +8,8 @@ from Theme import Theme
 
 class Game:
     def __init__(self,game_name,players=("Mohit","Arush"),theme="medieval",Characters=(0,1)):
+
+        #Initialising everything
         pygame.init()
         pygame.font.init()
         self.game_name=game_name
@@ -29,9 +31,11 @@ class Game:
         self.current_player=(self.current_player+1)%2
 
     def generate_background(self):
+        #Screen scaled background 
         image=self.assets.background
         image=pygame.transform.scale(image,self.Resolution)
         self.screen.blit(image,(0,0))
+        #This is for getting bg behind character to blit them in a cycle for animation effect
         self.frame1=self.screen.subsurface(pygame.Rect(self.assets.character_1_pos[0]*self.Resolution[0]/1280,self.assets.character_1_pos[1]*self.Resolution[1]/720,200*self.Resolution[0]/1280,180*self.Resolution[1]/720)).copy()
         self.frame2=self.screen.subsurface(pygame.Rect(self.assets.character_2_pos[0]*self.Resolution[0]/1280,self.assets.character_2_pos[1]*self.Resolution[1]/720,200*self.Resolution[0]/1280,180*self.Resolution[1]/720)).copy()
 
@@ -44,14 +48,19 @@ class Game:
 
 
     def generate_players(self):
+        #Loading animation frames of each character
         character0_0=pygame.transform.scale(self.assets.character[self.Characters[0]][0],(self.assets.character0_0size[0]*self.Resolution[0]/1280,self.assets.character0_0size[1]*self.Resolution[1]/720))
         character0_1=pygame.transform.scale(self.assets.character[self.Characters[0]][1],(self.assets.character0_1size[0]*self.Resolution[0]/1280,self.assets.character0_1size[1]*self.Resolution[1]/720))
         character1_0=pygame.transform.scale(self.assets.character[self.Characters[1]][0],(self.assets.character1_0size[0]*self.Resolution[0]/1280,self.assets.character1_0size[1]*self.Resolution[1]/720))
         character1_1=pygame.transform.scale(self.assets.character[self.Characters[1]][1],(self.assets.character1_1size[0]*self.Resolution[0]/1280,self.assets.character1_1size[1]*self.Resolution[1]/720))
+        #Flipping other side player
         character1_0=pygame.transform.flip(character1_0,flip_x=True,flip_y=False)
         character1_1=pygame.transform.flip(character1_1,flip_x=True,flip_y=False)
+        #Position of character and scaling it to screen
         character_2_pos=list(np.array(self.assets.character_2_pos)*np.array(self.Resolution)/np.array([1280,720]))
         character_1_pos=list(np.array(self.assets.character_1_pos)*np.array(self.Resolution)/np.array([1280,720]))
+        
+        #Blittiing them in a cycle according to timer
         if self.current_player==0:            
             self.screen.blit(self.frame2,character_2_pos)
             self.screen.blit(character1_0,character_2_pos)
@@ -76,7 +85,7 @@ class Game:
         return int(pygame.time.get_ticks()//250)
 
     def Resign(self):
-
+        #Resign frame
         Frame_size=list(np.array(self.assets.resign_size)*np.array(self.Resolution)/np.array([1280,720]))
         frame=pygame.transform.scale(self.assets.resign,Frame_size)
         loc1=list(np.array(self.assets.resign_pos)*np.array(self.Resolution)/np.array([1280,720]))
@@ -87,6 +96,7 @@ class Game:
         Resign_text_rect.center=list(np.array(self.assets.resign_text_pos)*np.array(self.Resolution)/np.array([1280,720]))
         self.screen.blit(text,Resign_text_rect)
 
+        #To detect if resign is clicked
         mouse_pos=pygame.mouse.get_pos()
         Resign_rect=frame.get_rect(topleft=loc1)
         if Resign_rect.collidepoint(mouse_pos):
@@ -96,7 +106,7 @@ class Game:
                 self.switch_turns()
     
     def display_player_names(self):
-
+        #Player Names
         Player1=self.assets.Player1
         text_rect1=self.assets.text_rect1.copy()
         text_rect1.center=list(np.array(self.assets.text_rect1.center)*np.array(self.Resolution)/np.array([1280,720]))
@@ -105,6 +115,7 @@ class Game:
         text_rect2=self.assets.text_rect2.copy()
         text_rect2.center=list(np.array(self.assets.text_rect2.center)*np.array(self.Resolution)/np.array([1280,720]))
         self.screen.blit(Player2,text_rect2)
+        #Display tokens below player names
         token_size=list(np.array(self.assets.token_size)*np.array(self.Resolution)/np.array([1280,720]))
         tokenloc1=list(np.array(self.assets.tokenloc1)*np.array(self.Resolution)/np.array([1280,720]))
         coin=pygame.transform.scale(self.assets.token1,token_size)
@@ -114,6 +125,7 @@ class Game:
         self.screen.blit(coin,tokenloc2)
 
     def display_game_name(self):
+        #Game name display
         Box_size=list(np.array(self.assets.resign_size)*np.array(self.Resolution)/np.array([1280,720]))
         frame=pygame.transform.scale(self.assets.resign,Box_size)
         textboxsize=list(np.array(self.assets.textboxsize)*np.array(self.Resolution)/np.array([1280,720]))
@@ -134,6 +146,7 @@ class Game:
         pass
 
     def redraw_tokens(self):
+        #Redrawing token for resizing
         token_size=list(np.array(self.assets.token_size)*np.array(self.Resolution)/np.array([1280,720]))
         for x in range(len(self.Board)):
             for y in range(len(self.Board)):
@@ -144,6 +157,7 @@ class Game:
                 elif pos==1:
                     coin=pygame.transform.scale(self.assets.token2,token_size)
                     self.screen.blit(coin,(self.assets.start_pos[0]*self.Resolution[0]/1280-self.assets.token_size[0]*self.Resolution[0]/2560+self.assets.tokengap[0]*x*self.Resolution[0]/1280,self.assets.start_pos[1]*self.Resolution[1]/720-self.assets.token_size[1]*self.Resolution[1]/720/2+self.assets.tokengap[1]*y*self.Resolution[1]/720))
+    
     def run(self):
         self.running=True
 
@@ -177,5 +191,6 @@ class Game:
             pygame.display.update()
 
             if self.running==False:
+                #Returns this for adding them in history.csv and further calling of leaderboard
                 return self.tie,self.current_player
             

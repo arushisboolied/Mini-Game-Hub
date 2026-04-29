@@ -98,6 +98,7 @@ class TicTacToe(Game):
 
                 self.current_move = [grid_x, grid_y]
                 self.update_board()
-                 
+
+#Testing          
 if __name__=="__main__":
     TicTacToe(theme="dune").run()          

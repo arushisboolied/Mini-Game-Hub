@@ -116,6 +116,6 @@ class Connect4(Game):
                 ##### Update the board #####
                 self.update_board()
                  
-
+#Testing
 if __name__=="__main__":
     Connect4(theme="medieval").run()

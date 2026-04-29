@@ -231,5 +231,6 @@ class Othello(Game):
         self.screen.blit(box,rect)        
         self.screen.blit(counter2,text_rect)
 
+#Testing
 if __name__ == "__main__":
     Othello(theme="dune").run()

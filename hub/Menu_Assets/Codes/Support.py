@@ -1,11 +1,12 @@
 import csv
 import os
-
+#Defining paths
 BASE_DIR=os.path.join(os.path.dirname(__file__), "..")
 IMAGES_DIR=os.path.join(BASE_DIR, "Images")
 CSV_DIR=os.path.join(BASE_DIR, "Csv_Files")
 FONT_DIR=os.path.join(BASE_DIR, "Fonts")
 
+#Loading all files
 Map_Boundary_file=os.path.join(CSV_DIR, "Map_Boundary.csv")
 Map_Regions_file=os.path.join(CSV_DIR, "Map_Regions.csv")
 Boundary_image_path=os.path.join(IMAGES_DIR, "Boundary.png")
@@ -27,16 +28,18 @@ Character_Selection_image_parent_path=IMAGES_DIR
 
 Text_font_path=os.path.join(FONT_DIR, "Righteous.ttf")
 
-
+#Loading Boundary from csv file
 with open(Map_Boundary_file,"r") as f:
     reader=csv.reader(f)
 
     Obstacle_Map=list(reader)
 
+#Loading Regions Boundary
 with open(Map_Regions_file,"r") as f:
     reader=csv.reader(f)
     Region_Map=list(reader)
 
+#For early testing
 Test_Map=[
 ['x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x'],
 ['x',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','x'],
@@ -60,8 +63,10 @@ Test_Map=[
 ['x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x']
 ]
 
+
 Theme_mapping={0: "Kingdom of \nHeaven", 1: "Blade Runner\n2049", 2: "Dune"}
 
+#Defines interactive zones where user can press E
 Interactive=[
 
     {"Zone":"Speed","pos":(1088,1296),"size":(96,96)},

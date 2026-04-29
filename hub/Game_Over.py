@@ -4,10 +4,10 @@ import sys
 import subprocess
 
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-COLUMNS = ["Tictactoe","Connect4","Othello","ALL GAMES"]
-ROWS = ["WINS","LOSSES","W/L RATIO"]
-KEYS = ["1 1", "1 2", "1 3", "2 1", "2 2", "2 3", "3 1", "3 2", "3 3", "4 1", "4 2", "4 3"]
+HERE = os.path.dirname(os.path.abspath(__file__)) #File path
+COLUMNS = ["Tictactoe","Connect4","Othello","ALL GAMES"] #Game names
+ROWS = ["WINS","LOSSES","W/L RATIO"] #Game displays 
+KEYS = ["1 1", "1 2", "1 3", "2 1", "2 2", "2 3", "3 1", "3 2", "3 3", "4 1", "4 2", "4 3"] #Sorting criteria for passing it to leaderboard.sh
 
 
 class Game_Over:
@@ -40,6 +40,7 @@ class Game_Over:
         self.f_button = pygame.font.Font(f, 22)
         self.f_hint = pygame.font.Font(f, 14)
 
+    #for long texts
     def wraptext(self, font, text, max_w):
         words, lines, line = text.split(), [], ""
         for w in words:
@@ -51,7 +52,7 @@ class Game_Over:
                 line = w
         if line: lines.append(line)
         return lines
-        
+     
     def draw(self):
         self.screen.blit(pygame.transform.scale(self.background, (self.W, self.H)), (0, 0))
         bubble = pygame.Rect(0.20*self.W, 0.04*self.H, 0.77*self.W, 0.67*self.H)
@@ -60,6 +61,7 @@ class Game_Over:
         message_height = bubble.height*0.3
         message_pad = 32
         
+        #Message
         if self.condition:
             if self.condition == "win":
                 message = f"Congratulations {self.winner}! You have won the game. Better luck next time, {self.loser}!"
@@ -78,7 +80,8 @@ class Game_Over:
             start_y += line_height
             
         pygame.draw.line(self.screen, (160,155,145), (bubble.x+20, bubble.y+message_height), (bubble.x+bubble.width-20, bubble.y+message_height), 1)
-
+        
+        #Drawing the cells for option selection
         grid_x = bubble.x + 12
         grid_y = bubble.y + message_height + 10
         grid_width = bubble.width - 24
@@ -89,6 +92,7 @@ class Game_Over:
         cell_height  = (grid_height - header_height) // 3
         self.screen.blit(self.f_hint.render("Sort leaderboard by:", True, (80,80,80)), (grid_x + 4, grid_y))
 
+        #Hovering and drawing grid
         for i, col in enumerate(COLUMNS):
             cell_x = grid_x + i*cell_width + cell_width//2
 
@@ -127,6 +131,7 @@ class Game_Over:
 
         #button width is 220, height is 44, gap of 20
 
+        #Button for showing leaderboard on terminal
         button_x = (self.W - 460) // 2
         button_y = self.H - 60
         leaderboard_rectangle = pygame.Rect(button_x, button_y, 220, 44)
@@ -136,6 +141,7 @@ class Game_Over:
         leaderboard_label = self.f_button.render("SHOW", True, (235,230,220) if self.selection is not None else (120, 115, 105))
         self.screen.blit(leaderboard_label, leaderboard_label.get_rect(center=leaderboard_rectangle.center))
 
+        #Next label
         quit_rectangle = pygame.Rect(button_x + 240, button_y, 220, 44)
         self.button_quit = quit_rectangle
         quit_hover = quit_rectangle.collidepoint(mx, my)
@@ -144,6 +150,7 @@ class Game_Over:
         quit_label = self.f_button.render("Next", True, (235,230,220))
         self.screen.blit(quit_label, quit_label.get_rect(center=quit_rectangle.center))
 
+    #Calling leaderboard.sh
     def call(self, key):
         subprocess.run(["bash", "./hub/leaderboard.sh", "./hub/history.csv", "./hub/users.tsv",key[:1], key[2:], "Tictactoe", "Connect4", "Othello"], check = False)
 
@@ -155,24 +162,24 @@ class Game_Over:
 
             for event in pygame.event.get():
             
-
+                #Window resize
                 if event.type == pygame.VIDEORESIZE:
                     self.W, self.H = event.size
                     self.screen = pygame.display.set_mode((self.W, self.H), pygame.RESIZABLE)
-
+                #Selection of sort criteria and showing leaderboard if only a criteria is selected
                 elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                     mx, my = pygame.mouse.get_pos()
                     for rect, idx in self.cells:
                         if rect.collidepoint(mx, my):
                             self.selection = idx
-                        
+                    #Showing leaderboard.sh
                     if self.button_leaderboard.collidepoint(mx, my) and self.selection is not None:
                             key = KEYS[self.selection]
                             self.call(key)
-                        
+                    #Proceeding to next stats.py
                     if self.button_quit.collidepoint(mx, my):
                             running = False
-                
+                #continuing previous sort criteria selection 
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RETURN and self.selection is not None:
                         key = KEYS[self.selection]
@@ -180,7 +187,8 @@ class Game_Over:
             
             self.draw()
             pygame.display.flip()
-                    
+
+#For testing                 
 if __name__ == "__main__":
     result = Game_Over(None, "Mohit", "Arush", "Connect4").run()
     pygame.quit()

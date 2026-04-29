@@ -6,7 +6,7 @@ from Support import *
 class Settings:
     def __init__(self):
         self.display_surface=pygame.display.get_surface()
-        
+        #Load images
         self.image=pygame.image.load(Character_Selection_image_path).convert_alpha()        
         self.Interaction_exit_prompt_image=pygame.image.load(Interaction_Exit_image_path).convert_alpha()
         self.text_banner_image=pygame.image.load(Settings_Text_image_path).convert_alpha()
@@ -34,6 +34,7 @@ class Settings:
         Width=self.display_surface.get_size()[0]
         Height=self.display_surface.get_size()[1]
 
+        #Displaying based on which zone
         if "Char" in self.zone["Zone"] or "Theme" in self.zone["Zone"] or "Speed" in self.zone["Zone"]:
 
             self.image=pygame.transform.scale(self.image,(Width*0.8,Height*0.8))
@@ -46,11 +47,12 @@ class Settings:
             self.display_surface.blit(self.text_banner_image, rect)
 
             if self.zone["Zone"]=="Speed":
+
                 Text=self.font.render("Speed of Menu Character", True, "black")
                 rect=Text.get_rect(center=(Width/2,Height*0.07))
                 self.display_surface.blit(Text, rect)
 
-                
+                #Changing speed
                 if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
                     self.player_speed+=1
                 elif keys[pygame.K_LEFT] or keys[pygame.K_a]:
@@ -73,7 +75,7 @@ class Settings:
                     self.character_selection-=1
                     if self.character_selection<0:
                         self.character_selection=1
-                
+                #Displaying which character to select
                 self.animation_index+=0.15
                 image=self.Menu_character[self.character_selection][0][int(self.animation_index)%8][1]
                 rect=image.get_rect(center=(Width*0.5,Height*0.45))
@@ -116,6 +118,7 @@ class Settings:
                 self.display_surface.blit(Text_user2, rect)
 
             elif "Theme" == self.zone["Zone"]:
+                #Theme selection
                 Text=self.font.render("Theme Selection", True, "black")
                 rect=Text.get_rect(center=(Width/2,Height*0.07))
                 self.display_surface.blit(Text, rect)
@@ -133,7 +136,7 @@ class Settings:
                 rect=Text_theme.get_rect(center=(Width/2,Height*0.45))
                 self.display_surface.blit(Text_theme, rect)
 
-        elif "game" in self.zone["Zone"]:
+        elif "game" in self.zone["Zone"]: #Calling games based on user interaction
             self.game_title_image=pygame.transform.scale(self.game_title_image,(Width*0.8,Height*0.4))
             rect=self.game_title_image.get_rect(center=(Width/2,Height*0.09))
             self.display_surface.blit(self.game_title_image, rect)
@@ -174,7 +177,7 @@ class Settings:
                 if keys[pygame.K_RETURN] or keys[pygame.K_KP_ENTER]:
                     self.current_game="Othello"
 
-        elif "Leaderboard" in self.zone["Zone"]:
+        elif "Leaderboard" in self.zone["Zone"]:    #calling leaderboard or exiting the menu based on user interaction
             self.game_title_image=pygame.transform.scale(self.game_title_image,(Width*0.8,Height*0.4))
             rect=self.game_title_image.get_rect(center=(Width/2,Height*0.09))
             self.display_surface.blit(self.game_title_image, rect)
@@ -195,7 +198,7 @@ class Settings:
 
 
 
-
+        #Exit prompt from settings to return to menu
         self.Interaction_exit_prompt_image=pygame.transform.scale(self.Interaction_exit_prompt_image,(Width*0.5,Height*0.6))
         rect=self.Interaction_exit_prompt_image.get_rect(center=(Width/2,Height*0.88))
         self.display_surface.blit(self.Interaction_exit_prompt_image, rect)

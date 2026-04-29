@@ -2,7 +2,7 @@ import os,sys
 import pygame
 from Support import *
 
-
+#Loads invisible tile images(as used for boundary only)
 class Tile(pygame.sprite.Sprite):
     def __init__(self,pos,groups):
         super().__init__(groups)
