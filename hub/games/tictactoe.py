@@ -10,7 +10,11 @@ class TicTacToe(Game):
     ####################### INITIALIZATION OF THE BOARD #######################
 
     def __init__(self,game_name="TicTacToe", players=("Player1","Player2"), theme="medieval", Characters=(0,1)):
-        super().__init__(game_name,players, theme, Characters)      
+
+        ##### Initialize the base Game class with the provided parameters #####
+        super().__init__(game_name,players, theme, Characters)    
+
+        ##### Initialize the board as a 10x10 square with empty cells being represented by -1 #####  
         self.Board=np.ones(100,dtype=int).reshape(10,10)*(-1)
 
 
@@ -19,11 +23,11 @@ class TicTacToe(Game):
     
     def win_check(self):
 
-        ##### READ THE LAST MOVE #####
+        ##### Read the last move #####
 
         x,y=self.current_move
 
-        ##### CHECK FOR 5 IN A ROW COLUMN DIAGONAL OR ANTI DIAGONAL #####
+        ##### Check for 5 in a row, column, diagonal, or anti-diagonal #####
 
         checker=np.ones(5,dtype=int)*(self.current_player)
 
@@ -67,12 +71,12 @@ class TicTacToe(Game):
 
     def event_handler(self, event):
 
-        ##### REGISTERS A CLICK AND LOCATION OF THE CLICK TO UPDATE THE BOARD #####
+        ##### Registers mouse click of the user #####
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, mouse_y = pygame.mouse.get_pos()
             
-            ##### BOARD BOUNDARIES TO NOT CONSIDER OUT OF BOUNDS CLICKS #####
+            ##### Board boundaries to not consider out of bounds clicks #####
 
             y_min, y_max = self.assets.y
             x_min, x_max = self.assets.x
@@ -83,7 +87,7 @@ class TicTacToe(Game):
             x_min=x_min*self.Resolution[0]/1280
             x_max=x_max*self.Resolution[0]/1280
 
-            ##### CHECKING TARGET CELL #####
+            ##### Checking target cells #####
 
             if y_min <= mouse_y < y_max and x_min <= mouse_x < x_max:
                 col_width = (x_max - x_min) / 10

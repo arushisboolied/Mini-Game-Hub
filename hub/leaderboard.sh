@@ -11,20 +11,20 @@ done
 
 x=$(cut -d ',' -f1,4 $1 | sort | uniq -c|awk '{print $1,$2}'|tr ' ' ','|tr -d '\r')
 y=$(cut -d ',' -f2,4 $1 | sort | uniq -c|awk '{print $1,$2}'|tr ' ' ','|tr -d '\r')
-Users=$(cut -d ' ' -f1 $2)
+Users=$(cut -d $'\t' -f1 "$2" | tail -n +2)   # use tab delimiter if it's a .tsv; skip header if any
 
-let n=0
+n=0
 while read -r line ; do
     usr_lists[$n]=$line
     ((n++))
-done<<< $Users
+done <<< "$Users"
 while IFS=',' read -r wins winner game ; do
-    stats["$winner:$game:wins"]=$wins
-done <<< $x
+    stats["${winner}_${game}_wins"]=$wins
+done <<< "$x"
 
 while IFS=',' read -r losses loser game ; do
-    stats["$loser:$game:losses"]=$losses
-done <<< $y
+    stats["${loser}_${game}_losses"]=$losses
+done <<< "$y"
 
 for ((i=0;i<n;i++)); do
 
@@ -34,16 +34,16 @@ for ((i=0;i<n;i++)); do
     total_losses=0
     for game in ${Games[@]}; do
 
-        if [[ ${stats["$user:$game:losses"]:-0} == 0 ]]; then
+        if [[ ${stats["${user}_${game}_losses"]:-0} == 0 ]]; then
             ratio="1e999"
         else
-            ratio=$(echo "scale=3;${stats["$user:$game:wins"]:-0}/${stats["$user:$game:losses"]}"|bc -l)
+            ratio=$(echo "scale=3;${stats["${user}_${game}_wins"]:-0}/${stats["${user}_${game}_losses"]}"|bc -l)
         fi
 
-        Final_stats[$i]+=",${stats["$user:$game:wins"]:-0},${stats["$user:$game:losses"]:-0},$ratio"
+        Final_stats[$i]+=",${stats["${user}_${game}_wins"]:-0},${stats["${user}_${game}_losses"]:-0},$ratio"
 
-        ((total_losses+=${stats["$user:$game:losses"]:-0}))
-        ((total_wins+=${stats["$user:$game:wins"]:-0}))
+        ((total_losses+=${stats["${user}_${game}_losses"]:-0}))
+        ((total_wins+=${stats["${user}_${game}_wins"]:-0}))
     done
 
     if [[ $total_losses == 0 ]]; then

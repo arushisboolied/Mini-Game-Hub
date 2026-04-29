@@ -5,8 +5,8 @@ import subprocess
 
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-COLUMNS = ["TIC_TAC_TOE","CONNECT_4","OTHELLO","ALL_GAMES"]
-ROWS = ["WINS","LOSSES","W/L_RATIO"]
+COLUMNS = ["TIC TAC TOE","CONNECT 4","OTHELLO","ALL GAMES"]
+ROWS = ["WINS","LOSSES","W/L RATIO"]
 KEYS = ["1 1", "1 2", "1 3", "2 1", "2 2", "2 3", "3 1", "3 2", "3 3", "4 1", "4 2", "4 3"]
 
 
@@ -144,6 +144,9 @@ class Game_Over:
         quit_label = self.f_button.render("Quit", True, (235,230,220))
         self.screen.blit(quit_label, quit_label.get_rect(center=quit_rectangle.center))
 
+    def call(self, key):
+        subprocess.run(["bash", "./hub/leaderboard.sh", "./hub/history.csv", "./hub/users.tsv",key[0], key[1], "TicTacToe", "Connect4", "Othello"], check = False)
+
     def run(self):
 
         running = True
@@ -167,6 +170,7 @@ class Game_Over:
                         
                     if self.button_leaderboard.collidepoint(mx, my) and self.selection is not None:
                             key = KEYS[self.selection]
+                            self.call(key)
                             return key
                         
                     if self.button_quit.collidepoint(mx, my):
@@ -177,6 +181,7 @@ class Game_Over:
                         running = False
                     if event.key == pygame.K_RETURN and self.selection is not None:
                         key = KEYS[self.selection]
+                        self.call(key)
                         return key
             
             self.draw()
