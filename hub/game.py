@@ -180,20 +180,4 @@ class Game:
             
             self.generate_players()            
             pygame.display.update()
-
-
-
-
             
-
-
-
-
-
-
-
-
-
-
-    
-
