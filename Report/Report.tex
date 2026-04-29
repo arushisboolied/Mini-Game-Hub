@@ -1,0 +1,505 @@
+\documentclass[12pt, a4paper]{article}
+
+% ── Packages ──────────────────────────────────────────────────────────────────
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{url}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{microtype}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+\usepackage[
+    colorlinks   = true,
+    linkcolor    = teal,
+    citecolor    = teal!70!black,
+    urlcolor     = teal!80!black,
+    filecolor    = teal,
+    pdftitle     = {Wormhole: A Mini Game Hub in Python},
+    pdfauthor    = {Mohit Agarwal and Arush Anand},
+    pdfsubject   = {CS108 Project Report},
+    pdfkeywords  = {pygame python gamehub boardgames},
+    bookmarksnumbered = true,
+    pdfstartview = FitH
+]{hyperref}
+
+% ── Colour palette ─────────────────────────────────────────────────────────────
+\definecolor{sectioncolor}{RGB}{0, 100, 120}
+\definecolor{subsectioncolor}{RGB}{40, 130, 150}
+\definecolor{rulecolor}{RGB}{0, 100, 120}
+\definecolor{codebg}{RGB}{245, 248, 250}
+
+% ── Section styling ────────────────────────────────────────────────────────────
+\titleformat{\section}
+    {\color{sectioncolor}\large\bfseries}
+    {\color{sectioncolor}\thesection.}{0.6em}{}
+    [\color{rulecolor}\rule{\titlewidth}{0.6pt}]
+
+\titleformat{\subsection}
+    {\color{subsectioncolor}\normalsize\bfseries}
+    {\color{subsectioncolor}\thesubsection}{0.5em}{}
+
+\titleformat{\subsubsection}
+    {\color{subsectioncolor!80!black}\normalsize\itshape\bfseries}
+    {\thesubsubsection}{0.5em}{}
+
+\titlespacing*{\section}{0pt}{1.4ex plus .3ex minus .2ex}{0.8ex plus .1ex}
+\titlespacing*{\subsection}{0pt}{1.1ex plus .2ex minus .1ex}{0.5ex plus .1ex}
+
+% ── Header / Footer ────────────────────────────────────────────────────────────
+\setlength{\headheight}{24pt}
+\addtolength{\topmargin}{-12pt}
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{rulecolor}\leaders\hrule height \headrulewidth\hfill}}
+\fancyhead[L]{\small\color{sectioncolor}\textit{Wormhole -- CS108 Project}}
+\fancyfoot[C]{\small\thepage}
+
+% ── List styling ───────────────────────────────────────────────────────────────
+\setlist[itemize]{leftmargin=1.5em, itemsep=2pt, topsep=4pt}
+\setlist[description]{leftmargin=1.5em, itemsep=2pt, topsep=4pt}
+
+% ── Bold monospace helper ──────────────────────────────────────────────────────
+\newcommand{\bftt}[1]{{\normalfont\bfseries\ttfamily #1}}
+
+% ── Title ─────────────────────────────────────────────────────────────────────
+\title{
+    \vspace{-1cm}
+    {\Large \textbf{CS108 Project -- Spring Semester}} \\[0.4cm]
+    {\huge \textbf{Wormhole: A Mini Game Hub in Python}} \\[0.3cm]
+    {\large Built with Pygame}
+    \vspace{0.3cm}
+}
+\author{
+    Mohit Agrawal \and Arush Anand
+}
+
+% =============================================================================
+\begin{document}
+
+\maketitle
+\thispagestyle{fancy}
+
+% ── Abstract ──────────────────────────────────────────────────────────────────
+\begin{abstract}
+This report aims to help the reader access and use our project -- \textit{Wormhole} -- easily, without requiring extensive comprehension of the source code. It covers the project's concept, design, implementation, and the challenges faced during development. Wormhole is a two-player themed game hub built using the \texttt{pygame} library in Python, featuring a pixel-art knight who navigates a richly themed menu across three distinct worlds, each hosting classic two-player board games.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+% ── 1. Introduction ───────────────────────────────────────────────────────────
+\section{Introduction}
+
+Wormhole is a two-player game hub developed as part of the CS108 course project. The project draws inspiration from retro RPG aesthetics and classic board games, combining them into a single cohesive experience. Players register accounts, navigate a pixel-art world, and compete across three well-known board games: Tic-Tac-Toe, Connect~4, and Othello.
+
+The game hub is designed to be extensible. Its modular theme system allows different visual identities -- from medieval fantasy to dystopian science fiction -- to be applied seamlessly across the menu, characters, boards, and tokens.
+
+% ── 2. Project Overview ───────────────────────────────────────────────────────
+\section{Project Overview}
+
+Players begin by registering accounts through a terminal-based system. Credentials (username and password) are stored in a \texttt{.tsv} file, enforcing uniqueness per user.
+
+Once registered, players enter the \textbf{Menu World} where a pixel-art knight serves as the navigation cursor. The knight can enter one of three themed \textit{worlds}:
+
+\begin{itemize}
+    \item \textbf{Kingdom of Heaven} -- A medieval fantasy setting with wooden textures and stone boards.
+    \item \textbf{Blade Runner 2049} -- A neon-lit cyberpunk world with holographic boards.
+    \item \textbf{Dune} -- A desert world with rocky terrain and sand-toned boards.
+\end{itemize}
+
+Within each world, two players are assigned character roles (protagonist vs.\ antagonist) and compete in their selected game. Non-static sprites indicate whose turn it is. Players may either make a move or resign.
+
+After each match, players encounter \textbf{The Director} -- an omniscient arbiter who presents a sortable leaderboard (by wins, losses, or win/loss ratio) and post-match statistics.
+
+% ── 3. System Modules ─────────────────────────────────────────────────────────
+\section{System Modules}
+
+\subsection{External Libraries}
+
+The project depends on the following external Python libraries:
+
+\begin{center}
+\begin{tabular}{| >{\ttfamily}l | p{9cm} |}
+\hline
+\normalfont\textbf{Library} & \textbf{Purpose} \\
+\hline
+pygame-ce \normalfont\cite{pygamece}   & Community edition of Pygame; core game rendering and event loop \\
+numpy \normalfont\cite{numpy}          & Efficient array operations for game-state representation \\
+matplotlib \normalfont\cite{matplotlib}& Static and interactive visualisations for the statistics screen \\
+os                                     & OS-level file and path operations \\
+sys                                    & Interpreter interaction and exit handling \\
+subprocess                             & Spawning shell scripts (e.g.\ the leaderboard script) \\
+\hline
+\end{tabular}
+\end{center}
+
+% ── 4. Project Structure ──────────────────────────────────────────────────────
+\section{Project Structure}
+
+\begin{verbatim}
+.
+|-- hub/
+|   |-- Assets/
+|   |   |-- Game_Over/
+|   |   |   |-- Background.png
+|   |   |   `-- Fonts.ttf
+|   |   |-- Images/
+|   |   |-- Fonts/
+|   |   `-- Theme.py
+|   |-- games/
+|   |   |-- connect4.py
+|   |   |-- othello.py
+|   |   `-- tictactoe.py
+|   |-- Menu_Assets/
+|   |   |-- Codes/
+|   |   |-- Csv_Files/
+|   |   |   |-- Map_Boundary.csv
+|   |   |   `-- Map_Regions.csv
+|   |   |-- Fonts/
+|   |   `-- Images/
+|   |-- Game_Over.py
+|   |-- game.py
+|   |-- Menu.py
+|   |-- stats.py
+|   |-- history.csv
+|   |-- users.tsv
+|   |-- leaderboard.sh
+|   `-- main.sh
+|-- Report/
+|   |-- Makefile
+|   |-- Report.tex
+|   |-- Bibliography.bib
+|   `-- Report.pdf
+|-- .gitignore
+|-- README.md
+`-- Requirements.txt
+\end{verbatim}
+
+% ── 5. Major Features ─────────────────────────────────────────────────────────
+\section{Major Features}
+
+\subsection{Medieval Fantasy Menu}
+
+The menu presents a pixel-art world rendered using \texttt{pygame-ce} \cite{pygamece}. Players control a knight character using \texttt{WASD} keys, interacting with in-world NPCs (spearmen) via the \texttt{E} key to trigger game selection, speed settings, and theme selection.
+
+\subsection{Theme System}
+
+Three thematic skins are available, each affecting menu visuals, character sprites, game boards, tokens, and sprite animations. The pixel art assets were sourced from the Tiny Swords asset pack \cite{tinyswords} and supplemented with AI-generated artwork.
+
+\begin{description}
+    \item[Kingdom of Heaven] Wooden textures, stone boards, Knight and Archer characters.
+    \item[Blade Runner 2049] Neon palette, holographic boards, Roy and Decker characters.
+    \item[Dune] Rock and sand aesthetics, desert boards, Paul Atreides and Harkonnen characters.
+\end{description}
+
+\subsection{Board Games}
+
+\begin{itemize}
+    \item \textbf{Tic-Tac-Toe}: $10 \times 10$ board; first to achieve 5 in a row wins.
+    \item \textbf{Connect 4}: $7 \times 7$ board; standard drop-piece mechanics \cite{connect4_rules}.
+    \item \textbf{Othello}: $8 \times 8$ board; standard flipping rules \cite{othello_rules}.
+\end{itemize}
+
+During gameplay, animated non-static sprites indicate the active player. Either player may resign on their turn.
+
+\subsection{Leaderboard and Statistics}
+
+The Director presents a terminal-rendered leaderboard sortable by total wins, total losses, or win/loss ratio. Post-match statistics include per-game popularity metrics and top-winner summaries, rendered via \texttt{matplotlib} \cite{matplotlib}.
+
+% ── 6. Important Functions ────────────────────────────────────────────────────
+\section{Important Functions}
+\label{sec:functions}
+
+This section documents the key functions defined across all Python modules in the project.
+
+% ---- game.py ----------------------------------------------------------------
+\subsection{\texttt{game.py} -- Base Game Class}
+\label{subsec:gamepy}
+
+\noindent\bftt{Game.\_\_init\_\_(self, game\_name, players, theme, Characters)}\\
+Initialises Pygame \cite{pygamece} and all shared game state: screen surface, clock, current player index, resolution, asset theme, and the tie flag. Every concrete game (TicTacToe, Connect4, Othello) calls this via \texttt{super()}.
+
+\medskip
+\bftt{Game.generate\_background(self)}\\
+Blits a resolution-scaled background image to the display and captures two sub-surface snapshots at each character's position. These snapshots are reused each frame to restore the background behind animated sprites, preventing overdraw artefacts.
+
+\medskip
+\bftt{Game.generate\_players(self)}\\
+Renders the two character sprites with a simple two-frame toggle animation. Only the active player's sprite animates; the idle player is frozen on frame 0. Sprites for player 2 are horizontally flipped so both characters face the board.
+
+\medskip
+\bftt{Game.Resign(self)}\\
+Draws the resign button and detects a left mouse-button press inside its hit-rectangle. On activation it sets \texttt{self.running = False} and calls \texttt{switch\_turns()} so the resigning player becomes the loser when the result is reported.
+
+\medskip
+\bftt{Game.redraw\_tokens(self)}\\
+Iterates over the entire board array \cite{numpy} and blits the appropriate scaled token sprite for every occupied cell. Cells holding \texttt{-1} (empty) are skipped.
+
+\medskip
+\bftt{Game.run(self)}\\
+The main game loop: ticks the clock at 60 FPS, dispatches Pygame events to \texttt{event\_handler()}, calls all draw helpers, and calls \texttt{pygame.display.update()}. Returns a \texttt{(tie, current\_player)} tuple when \texttt{self.running} becomes \texttt{False}.
+
+% ---- tictactoe.py -----------------------------------------------------------
+\subsection{\texttt{tictactoe.py} -- TicTacToe}
+\label{subsec:tictactoe}
+
+\noindent\bftt{TicTacToe.win\_check(self)}\\
+Checks the last-placed token for five in a row, column, main diagonal, or anti-diagonal using NumPy \cite{numpy} slice comparisons against a checker array of five equal values.
+
+\medskip
+\bftt{TicTacToe.update\_board(self)}\\
+Places a token on the board array at \texttt{current\_move} if the cell is empty, redraws all tokens, then calls \texttt{win\_check()}. Sets \texttt{self.running = False} on a win or a full board (tie), otherwise calls \texttt{switch\_turns()}.
+
+\medskip
+\bftt{TicTacToe.event\_handler(self, event)}\\
+Converts a mouse-button-down event into board grid coordinates by scaling pixel position against the board boundaries and cell dimensions, then calls \texttt{update\_board()}.
+
+% ---- connect4.py ------------------------------------------------------------
+\subsection{\texttt{connect4.py} -- Connect4}
+\label{subsec:connect4}
+
+\noindent\bftt{Connect4.win\_check(self)}\\
+Uses NumPy \cite{numpy} slice comparisons to scan every window of four consecutive cells in the row, column, main diagonal, and anti-diagonal through the last-moved position. Returns \texttt{True} as soon as any window matches the current player's token.
+
+\medskip
+\bftt{Connect4.update\_board(self)}\\
+Extracts the clicked column, finds the lowest empty row using \texttt{numpy.where}, places the token there (gravity simulation), then checks for win or tie. If neither condition is met, turns are switched.
+
+\medskip
+\bftt{Connect4.event\_handler(self, event)}\\
+Determines the column index from the horizontal pixel offset of a mouse click, ignoring clicks outside the board boundaries, then delegates to \texttt{update\_board()}.
+
+% ---- othello.py -------------------------------------------------------------
+\subsection{\texttt{othello.py} -- Othello}
+\label{subsec:othello}
+
+\noindent\bftt{Othello.check\_valid(self, x, y, player)}\\
+Returns \texttt{True} if placing a token at \texttt{(x, y)} is legal per the official Othello rules \cite{othello_rules}: the cell must be empty, and at least one direction must have a contiguous sequence of opponent pieces ending at a friendly piece.
+
+\medskip
+\bftt{Othello.valid\_moves(self, player)}\\
+Iterates every board cell and calls \texttt{check\_valid}; draws a hint token on each legal cell so the current player can see available moves.
+
+\medskip
+\bftt{Othello.flip\_pieces(self, x, y, player)}\\
+For each of the eight directions, collects opponent pieces that would be sandwiched by the new move and flips them to the current player's colour, then places the new piece.
+
+\medskip
+\bftt{Othello.win\_check(self)}\\
+Sets \texttt{self.end = True} when the board is completely full or when neither player has any legal move remaining \cite{othello_rules}.
+
+\medskip
+\bftt{Othello.update\_board(self)}\\
+After a valid move, calls \texttt{flip\_pieces()}, switches turns, and handles the pass-or-end scenarios: if the next player has no moves the turn reverts; if neither player has moves the game ends.
+
+\medskip
+\bftt{Othello.counter(self)}\\
+Counts how many cells each player occupies using \texttt{numpy.sum} \cite{numpy} and renders the totals as on-screen score labels scaled to the current resolution.
+
+% ---- Menu.py ----------------------------------------------------------------
+\subsection{\texttt{Menu.py} -- Main Menu}
+\label{subsec:menupy}
+
+\noindent\bftt{Menu.run(self)}\\
+The top-level application loop. Runs the Level at 60 FPS, detects which game was selected by \texttt{level.settings.current\_game}, launches the appropriate game class, writes the result to \texttt{history.csv}, and then calls \texttt{Game\_Over} and \texttt{stats\_main()} in sequence.
+
+% ---- Level.py ---------------------------------------------------------------
+\subsection{\texttt{Level.py} -- World Level}
+\label{subsec:levelpy}
+
+\noindent\bftt{Level.camera\_draw(self, group)}\\
+Computes a camera offset so the player sprite stays centred on screen, clamps the offset to the map boundaries ($4 \times 1280$ wide, $4 \times 720$ tall), and blits every sprite in the group with the offset applied.
+
+\medskip
+\bftt{Level.create\_boundary(self)}\\
+Reads \texttt{Obstacle\_Map} (a 2-D list parsed from CSV) and spawns a \texttt{Tile} sprite for every non-\texttt{-1} cell, building the static collision layer.
+
+\medskip
+\bftt{Level.create\_regions(self)}\\
+Reads \texttt{Region\_Map} and assigns each tile to one of four sprite groups (Spawn, Settings, Game Selection, Hinterland) used for region-change detection.
+
+% ---- Character.py -----------------------------------------------------------
+\subsection{\texttt{Character.py} -- Player Character}
+\label{subsec:characterpy}
+
+\noindent\bftt{Player.move(self, speed)}\\
+Normalises the direction vector, advances the hitbox, and checks collisions before committing the move. This separation of hitbox and display rect allows tight collision geometry independent of sprite size.
+
+\medskip
+\bftt{Player.animate(self)}\\
+Increments an animation index at 0.15 per frame and selects the correct sprite frame for the current status (\texttt{right\_idle}, \texttt{left\_move}, etc.), flipping the image for leftward movement.
+
+\medskip
+\bftt{Player.check\_zones(self)}\\
+Iterates the \texttt{Interactive} zone list and returns \texttt{True} if the hitbox overlaps any zone rectangle, storing the matched zone for the Settings panel.
+
+% ---- Settings.py ------------------------------------------------------------
+\subsection{\texttt{Settings.py} -- Settings Panel}
+\label{subsec:settingspy}
+
+\noindent\bftt{Settings.run(self)}\\
+Reads \texttt{pygame.key.get\_just\_pressed()} each frame and branches on \texttt{self.zone["Zone"]} to render one of: speed adjustment, menu-character selection, user character selection, theme selection, game-rules display, or leaderboard/exit options. Sets \texttt{self.current\_game} to signal \texttt{Menu.py} which action to take.
+
+% ---- Game_Over.py -----------------------------------------------------------
+\subsection{\texttt{Game\_Over.py} -- Post-Game Screen}
+\label{subsec:gameoverpy}
+
+\noindent\bftt{Game\_Over.draw(self)}\\
+Renders the result message, a $4 \times 3$ grid of selectable sort-criterion cells (game $\times$ stat type), and two buttons: SHOW (enabled only after a criterion is selected) and Next.
+
+\medskip
+\bftt{Game\_Over.call(self, key)}\\
+Invokes \texttt{leaderboard.sh} via \texttt{subprocess.run}, passing the history CSV, users TSV, and the two-part sort key (column index and stat index) as command-line arguments.
+
+\medskip
+\bftt{Game\_Over.run(self)}\\
+Event loop that handles cell selection by index, triggers \texttt{call()} on SHOW or Enter, and exits on Next.
+
+% ---- stats.py ---------------------------------------------------------------
+\subsection{\texttt{stats.py} -- Statistics}
+\label{subsec:statspy}
+
+\noindent\bftt{read\_history()}\\
+Parses \texttt{history.csv} line by line into a list of dicts with keys \texttt{Winner}, \texttt{Loser}, \texttt{Date}, and \texttt{Game}, skipping any malformed rows.
+
+\medskip
+\bftt{stat\_calculation(data)}\\
+Aggregates wins per player into a dict and collects all game names into a list, which are the two data sources needed for the charts.
+
+\medskip
+\bftt{graphs(wins, games)}\\
+Produces a transparent-background bar chart of the top-5 players and a pie chart of game-play distribution using \texttt{matplotlib} \cite{matplotlib}, saving both as PNG files consumed by the Pygame stats screen.
+
+\medskip
+\bftt{stats\_main()}\\
+Orchestrates the full stats pipeline: reads history, calculates stats, generates charts, and then runs the Pygame \cite{pygamece} display loop that shows the histogram and pie chart side-by-side with a Next button.
+
+% ── 7. Logic and Algorithms ───────────────────────────────────────────────────
+\section{Logic and Algorithms}
+\label{sec:algorithms}
+
+\subsection{Inheritance-Based Game Architecture}
+
+All three board games inherit from the abstract \texttt{Game} class in \texttt{game.py} (see \hyperref[subsec:gamepy]{Section~\ref*{subsec:gamepy}}). The base class implements the render pipeline, resign detection, player animation, and the main loop. Each subclass overrides only \texttt{win\_check()}, \texttt{update\_board()}, and \texttt{event\_handler()}, so shared behaviour is never duplicated. This approach follows standard Pygame game design practice \cite{pygame_book}.
+
+\subsection{Board Representation with NumPy}
+
+Every board is stored as a 2-D NumPy \cite{numpy} integer array initialised to \texttt{-1} (empty). Player 0's tokens are stored as \texttt{0} and player 1's as \texttt{1}. This representation enables vectorised slice comparisons for win detection and \texttt{numpy.where} for gravity in Connect4, avoiding explicit Python loops over the grid \cite{numpy_book}.
+
+\subsection{Win Detection}
+
+\subsubsection{TicTacToe -- Five in a Row}
+After each move at \texttt{(x, y)}, six overlapping windows of length five are checked along the row, column, main diagonal (\texttt{numpy.diagonal(offset = y - x)}), and anti-diagonal (\texttt{numpy.diagonal} of the horizontally flipped board with \texttt{offset = 9 - x - y}). A window matches if it equals a five-element checker array of the current player's value. See \hyperref[subsec:tictactoe]{Section~\ref*{subsec:tictactoe}} for the corresponding function documentation.
+
+\subsubsection{Connect4 -- Four in a Row with Gravity}
+The same sliding-window technique is applied with a window length of four on a $7 \times 7$ grid \cite{connect4_rules}. Gravity is implemented in \texttt{update\_board}: the clicked column is extracted, \texttt{numpy.where(col == -1)} finds empty rows, and the token is placed at the last (lowest) index, making tokens fall to the bottom. See \hyperref[subsec:connect4]{Section~\ref*{subsec:connect4}}.
+
+\subsubsection{Othello -- Directional Flanking}
+A move at \texttt{(x, y)} is valid only if at least one of the eight directions has a contiguous run of opponent pieces ending at a friendly piece (sandwiching), per the official rules \cite{othello_rules}. \texttt{check\_valid} implements this traversal. \texttt{flip\_pieces} then re-traverses each valid direction and converts all sandwiched opponent cells to the current player's colour. \texttt{win\_check} declares the game over when the board is full or neither player can move. See \hyperref[subsec:othello]{Section~\ref*{subsec:othello}}.
+
+\subsection{Gravity Simulation (Connect4)}
+
+Gravity is purely data-driven: no physics simulation is needed. When a column is clicked, \texttt{numpy.where(col == -1)[0]} returns the indices of all empty rows. Selecting the last element of this array (highest index = lowest visual row) replicates the effect of a token falling to the bottom of the column.
+
+\subsection{Camera and Tile-Based Map}
+
+The menu world is a $5120 \times 2880$ pixel map ($4\times$ the base resolution of $1280 \times 720$). The camera offset is computed each frame as the difference between the player's centre and half the screen dimensions, then clamped so the camera never shows the void outside the map. Collision and region tiles are loaded from CSV grids into Pygame \cite{pygamece} sprite groups; collision checks use \texttt{pygame.Rect.colliderect} between the player's hitbox and each tile's rect.
+
+\subsection{Region and Zone System}
+
+Four region sprite groups (Spawn, Settings, Game Selection, Hinterland) mirror a \texttt{Region\_Map} CSV. Each frame the player's hitbox is tested against every region group to update \texttt{Player.Region}, which controls the banner display. Interactive zones are defined as simple rect dictionaries in \texttt{Support.py}; \texttt{check\_zones()} tests the hitbox against these rects and stores the matched zone so the Settings panel knows what to render.
+
+\subsection{Settings State Machine}
+
+The Settings panel acts as a lightweight state machine. Its single \texttt{run()} method reads the active zone name and branches into mutually exclusive rendering and input paths: speed control, menu character, user character selection, theme, game rules, leaderboard, and exit. State is communicated back to \texttt{Level} and \texttt{Menu} via plain instance variables (\texttt{current\_game}, \texttt{theme}, character indices), avoiding callbacks or event queues.
+
+\subsection{Post-Game Data Flow}
+
+On game end, \texttt{Menu.run()} writes a row to \texttt{history.csv} (winner, loser, timestamp, game name). \texttt{Game\_Over.run()} lets the user select a sort criterion, then calls \texttt{leaderboard.sh} via \texttt{subprocess.run} with the criterion encoded as two integer arguments. \texttt{stats\_main()} then reads the same CSV, computes aggregates, renders transparent-background Matplotlib \cite{matplotlib} charts saved as PNGs, and displays them in a Pygame window -- creating a complete data pipeline from raw CSV to in-game visualisation.
+
+\subsection{Animation System}
+
+Both the menu character and in-game character sprites use a float counter incremented by 0.15 per frame. The floor of this counter modulo the frame count selects the current animation frame, producing a smooth approximately 6-frame-per-second animation at 60 FPS. The active player's sprite cycles between two frames; the inactive player is frozen. The player-2 sprite is flipped horizontally so both characters face the board regardless of screen position.
+
+% ── 8. Running Instructions ───────────────────────────────────────────────────
+\section{Running Instructions}
+
+\subsection{Prerequisites}
+
+\begin{itemize}
+    \item Python 3.x installed
+    \item \texttt{numpy} \cite{numpy}, \texttt{matplotlib} \cite{matplotlib}, and \texttt{pygame-ce} \cite{pygamece} installed
+\end{itemize}
+
+\subsection{Virtual Environment Setup}
+
+\begin{verbatim}
+python -m venv venv
+source venv/bin/activate
+python -m pip install -r requirements.txt
+\end{verbatim}
+
+\subsection{Launching the Game}
+
+\begin{verbatim}
+bash ./hub/main.sh
+\end{verbatim}
+
+\subsection{Controls}
+
+\begin{center}
+\begin{tabular}{| >{\ttfamily}l | p{8cm} |}
+\hline
+\normalfont\textbf{Key} & \textbf{Action} \\
+\hline
+W A S D & Move the knight \\
+E       & Interact with NPCs / select options \\
+\hline
+\end{tabular}
+\end{center}
+
+\textit{Note: Speed is uncapped by design -- exploring out-of-bounds is an intentional easter egg.}
+
+% ── 9. Challenges ─────────────────────────────────────────────────────────────
+\section{Challenges}
+
+\begin{itemize}
+    \item \textbf{Theme switching at runtime}: Dynamically reloading sprite sheets and board assets across three fully distinct visual themes without restarting the game loop required careful asset management and lazy loading strategies.
+    \item \textbf{Tile-based map integration}: CSV-driven map boundaries and region definitions had to be parsed and rendered efficiently to maintain smooth frame rates. The unavailability of pyTMX required a custom approach using a \texttt{Map.png} and CSV files for map loading and interaction handling.
+    \item \textbf{Cross-process communication}: Bridging the Python game loop with the Bash leaderboard script via \texttt{subprocess} required careful handling of I/O streams and process lifecycle.
+    \item \textbf{Pixel art generation}: Creating cohesive sprite sets for three distinct themes involved leveraging AI tools alongside the Tiny Swords asset pack \cite{tinyswords}.
+    \item \textbf{Resizable windows}: All images needed to be carefully scaled using variables tied to the current screen resolution.
+\end{itemize}
+
+% ── 10. Future Work (10 Additional Hours) ─────────────────────────────────────
+\section{Future Work}
+\label{sec:futurework}
+
+\textit{This section outlines planned improvements and extensions that would be implemented given an additional ten hours of development time.}
+
+\begin{itemize}
+    \item Add Sound systems
+    \item Add an Easter Egg in the Hinterlands(Originally intended but could not due to time limit)
+    \item Add a game Inscryption
+    \item Smoothen out Animations during gameplay
+    \item More Menu characters that player can control
+\end{itemize}
+
+% ── 11. Conclusion ────────────────────────────────────────────────────────────
+\section{Conclusion}
+
+Wormhole successfully demonstrates a modular, theme-driven game hub architecture in Python \cite{pygame_book}. The project integrates a real-time pixel-art navigation menu, three fully-playable two-player board games, persistent user accounts, and a statistical leaderboard system. The codebase is structured to make adding new games or themes straightforward. For further implementation details, refer to \hyperref[sec:functions]{Section~\ref*{sec:functions}} and \hyperref[sec:algorithms]{Section~\ref*{sec:algorithms}}.
+
+% ── References ────────────────────────────────────────────────────────────────
+\newpage
+\bibliographystyle{plain}
+\bibliography{Bibliography}
+
+\end{document}
