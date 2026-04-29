@@ -10,7 +10,7 @@ class TicTacToe(Game):
     ####################### INITIALIZATION OF THE BOARD #######################
 
     def __init__(self,game_name="TicTacToe", players=("Player1","Player2"), theme="medieval", Characters=(0,1)):
-        super().__init__(game_name,players, theme, Characters)      
+        super().__init__(game_name, Resolution=(1280, 720), players=players, theme=theme, Characters=Characters)
         self.Board=np.ones(100,dtype=int).reshape(10,10)*(-1)
 
 
@@ -73,7 +73,7 @@ class TicTacToe(Game):
             mouse_x, mouse_y = pygame.mouse.get_pos()
             
             ##### BOARD BOUNDARIES TO NOT CONSIDER OUT OF BOUNDS CLICKS #####
-
+            print(mouse_x, mouse_y)
             y_min, y_max = self.assets.y
             x_min, x_max = self.assets.x
 
@@ -96,4 +96,4 @@ class TicTacToe(Game):
                 self.update_board()
                  
 if __name__=="__main__":
-    TicTacToe(theme="medieval").run()          
+    TicTacToe(theme="dune").run()          

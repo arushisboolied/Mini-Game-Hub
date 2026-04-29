@@ -52,7 +52,7 @@ class Menu:
 
                 elif self.level.settings.current_game=="Connect4":
                     Connect4(theme=Theme_mapping[self.level.game_theme],Characters=(self.level.User1_selection,self.level.User2_selection),players=(User1,User2)).run()
-
+                    
                 elif self.level.settings.current_game=="Othello":
                     Othello(theme=Theme_mapping[self.level.game_theme],Characters=(self.level.User1_selection,self.level.User2_selection),players=(User1,User2)).run()
 

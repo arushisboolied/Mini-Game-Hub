@@ -8,9 +8,9 @@ from game import Game
 
 class Connect4(Game):
 
-    def __init__(self,game_name="Connect4", players=("Mohit","Arush"), theme="medieval", Characters=(0,1)):
+    def __init__(self,game_name="Connect4", players=("Mohit","Arush"), theme="medieval", Characters=(0,0)):
 
-        super().__init__(game_name,players,theme,Characters)
+        super().__init__(game_name,Resolution=(1280,720),players=players,theme=theme,Characters=Characters)
 
         self.Board=np.ones(49,dtype=int).reshape(7,7)*(-1)
 
@@ -55,7 +55,7 @@ class Connect4(Game):
     def event_handler(self, event):
         if event.type==pygame.MOUSEBUTTONDOWN:
             self.current_move=list(pygame.mouse.get_pos())
-            x, y = self.current_move
+            x,y=self.current_move
             y_min,y_max=self.assets.y
             y_min=y_min*self.Resolution[1]/720
             y_max=y_max*self.Resolution[1]/720
@@ -69,4 +69,4 @@ class Connect4(Game):
                 self.update_board()
                  
 if __name__=="__main__":
-    Connect4(theme="medieval").run()          
+    Connect4(theme="dune").run()          

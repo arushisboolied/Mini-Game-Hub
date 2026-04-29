@@ -11,7 +11,7 @@ done
 
 x=$(cut -d ',' -f1,4 $1 | sort | uniq -c|awk '{print $1,$2}'|tr ' ' ','|tr -d '\r')
 y=$(cut -d ',' -f2,4 $1 | sort | uniq -c|awk '{print $1,$2}'|tr ' ' ','|tr -d '\r')
-Users=$(cut -d ' ' -f1 $2)
+Users=$(cut -f1 $2)
 
 let n=0
 while read -r line ; do
