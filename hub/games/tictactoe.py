@@ -9,8 +9,8 @@ class TicTacToe(Game):
 
     ####################### INITIALIZATION OF THE BOARD #######################
 
-    def __init__(self,game_name="TicTacToe", players=("Player1","Player2"), Resolution=(1280,720), theme="medieval", Characters=(0,1)):
-        super().__init__(game_name,players, Resolution, theme, Characters)      
+    def __init__(self,game_name="TicTacToe", players=("Player1","Player2"), theme="medieval", Characters=(0,1)):
+        super().__init__(game_name,players, theme, Characters)      
         self.Board=np.ones(100,dtype=int).reshape(10,10)*(-1)
 
 

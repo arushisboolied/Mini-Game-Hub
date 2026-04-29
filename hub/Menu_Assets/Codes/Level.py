@@ -1,6 +1,6 @@
 import pygame
-from Test import *
-from TileMap import Tile
+from Support import *
+from Tile import Tile
 from Character import Player
 from debug import debug
 from Settings import Settings
@@ -44,6 +44,8 @@ class Level:
 
         self.User1_selection=0
         self.User2_selection=0
+
+        self.call_leaderboard=False
 
     def create_boundary(self):
 

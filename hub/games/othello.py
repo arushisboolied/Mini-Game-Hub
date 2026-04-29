@@ -10,8 +10,7 @@ from game import Game
 class Othello(Game):
 
     #################### INITIALIZATION OF BOARD ####################
-    def __init__(self, game_name="Othello", players=("Player1", "Player2"),
-                 Resolution=(1280, 720), theme="medieval", Characters=(0, 1)):
+    def __init__(self, game_name="Othello", players=("Player1", "Player2"), theme="medieval", Characters=(0, 1)):
 
         super().__init__(game_name, players, theme, Characters)
 

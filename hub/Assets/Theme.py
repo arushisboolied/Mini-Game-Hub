@@ -157,9 +157,9 @@ class Theme:
                 
         elif name=="dune":
             self.timer=pygame.image.load(os.path.join(os.path.dirname(__file__),"./Images/Timer_Dune.png")).convert_alpha()
-            self.timer_size=(400,100)
+            self.timer_size=(500,100)
             self.timer=pygame.transform.scale(self.timer,self.timer_size)
-            self.loc1=(435,0)
+            self.loc1=(390,0)
             self.text=pygame.font.Font(os.path.join(os.path.dirname(__file__),"./Dune Rise 400.ttf"),50)
             self.text_colour=(233,203,142)
             self.textloc=(640,58)
