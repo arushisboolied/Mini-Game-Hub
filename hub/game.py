@@ -4,7 +4,7 @@ import os
 import sys
 
 sys.path.append(os.path.join(os.path.dirname(__file__),'./Assets'))
-from Theme import Theme
+from Assets.Theme import Theme
 
 class Game:
     def __init__(self,game_name,players=("Mohit","Arush"),theme="medieval",Characters=(0,1)):

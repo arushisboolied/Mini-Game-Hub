@@ -30,7 +30,7 @@ class Theme:
             self.resign_text_pos=(640,65)
 
             #Text
-            self.text=pygame.font.Font(path("./the-golden-blade.regular.ttf"),50)
+            self.text=pygame.font.Font(path("Fonts/the-golden-blade.regular.ttf"),50)
             self.text_colour=(230,200,120)
             
             #Character positions
@@ -123,7 +123,7 @@ class Theme:
             self.resign_text_pos=(640,55)
 
             #Text
-            self.text=pygame.font.Font(path("blade_runner.ttf"),50)
+            self.text=pygame.font.Font(path("Fonts/blade_runner.ttf"),50)
             self.text_colour=(3,216,243)
 
             #Character positions
@@ -215,7 +215,7 @@ class Theme:
             self.resign_text_pos=(640, 58)
 
             #Text
-            self.text= pygame.font.Font(path("./Dune Rise 400.ttf"), 40)
+            self.text= pygame.font.Font(path("./Fonts/Dune Rise 400.ttf"), 40)
             self.text_colour= (233, 203, 142)
 
             #Character positions
