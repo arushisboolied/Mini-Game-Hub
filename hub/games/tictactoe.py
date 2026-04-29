@@ -100,4 +100,4 @@ class TicTacToe(Game):
                 self.update_board()
                  
 if __name__=="__main__":
-    TicTacToe(theme="medieval").run()          
+    TicTacToe(theme="dune").run()          

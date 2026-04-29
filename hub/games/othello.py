@@ -13,7 +13,7 @@ class Othello(Game):
     def __init__(self, game_name="Othello", players=("Player1", "Player2"), theme="medieval", Characters=(0, 1)):
 
         ##### Initialize the base Game class with the provided parameters #####
-        super().__init__(game_name, players, theme, Characters)
+        super().__init__(game_name, Resolution=(1280, 720), players=players, theme=theme, Characters=Characters)
 
         ##### Create an 8x8 board initialized with -1 (indicating empty spaces) #####
         self.Board = np.full((8, 8), -1, dtype=int)
@@ -91,7 +91,7 @@ class Othello(Game):
             for x in range(8):
                 if self.check_valid(x, y, player):
                     coin=pygame.transform.scale(self.assets.token3,token_size)
-                    self.screen.blit(coin,(self.assets.start[0]*self.Resolution[0]/1280-self.assets.token_size[0]*self.Resolution[0]/2560+self.assets.tokengap[0]*x*self.Resolution[0]/1280,self.assets.start[1]*self.Resolution[1]/720-self.assets.token_size[1]*self.Resolution[1]/720/2+self.assets.tokengap[1]*y*self.Resolution[1]/720))
+                    self.screen.blit(coin,(self.assets.start_pos[0]*self.Resolution[0]/1280-self.assets.token_size[0]*self.Resolution[0]/2560+self.assets.tokengap[0]*x*self.Resolution[0]/1280,self.assets.start_pos[1]*self.Resolution[1]/720-self.assets.token_size[1]*self.Resolution[1]/720/2+self.assets.tokengap[1]*y*self.Resolution[1]/720))
     
     def redraw_tokens(self):
 
@@ -209,13 +209,13 @@ class Othello(Game):
     def counter(self):
 
         ##### Count the number of pieces for each player on the board #####
-        counter1=str(np.sum(self.Board==1))
-        counter2=str(np.sum(self.Board==0))
+        counter1=str(np.sum(self.Board==0))
+        counter2=str(np.sum(self.Board==1))
 
         ##### Scale the timer box for the current screen resolution and position it for the players' counter #####
-        box=pygame.transform.scale(self.assets.timer,(200*self.Resolution[0]/1280,100*self.Resolution[1]/720))
+        box=pygame.transform.scale(self.assets.resign,(self.assets.Counter_1_size[0]*self.Resolution[0]/1280,self.assets.Counter_1_size[1]*self.Resolution[1]/720))
         rect=box.get_rect()
-        Counter1center=list(np.array(self.assets.Counter1center)*np.array(self.Resolution)/np.array([1280,720]))
+        Counter1center=list(np.array(self.assets.Counter_1_center)*np.array(self.Resolution)/np.array([1280,720]))
         rect.center=Counter1center
         counter1=self.assets.text.render(counter1,True,(255,255,255))
         text_center=(rect.center[0],rect.center[1]+5)
@@ -223,7 +223,7 @@ class Othello(Game):
         self.screen.blit(box,rect)        
         self.screen.blit(counter1,text_rect)
 
-        Counter2center=list(np.array(self.assets.Counter2center)*np.array(self.Resolution)/np.array([1280,720]))
+        Counter2center=list(np.array(self.assets.Counter_2_center)*np.array(self.Resolution)/np.array([1280,720]))
         rect.center=Counter2center
         counter2=self.assets.text.render(counter2,True,(255,255,255))
         text_center=(rect.center[0],rect.center[1]+5)
@@ -232,4 +232,4 @@ class Othello(Game):
         self.screen.blit(counter2,text_rect)
 
 if __name__ == "__main__":
-    Othello(theme="medieval").run()
+    Othello(theme="dune").run()
