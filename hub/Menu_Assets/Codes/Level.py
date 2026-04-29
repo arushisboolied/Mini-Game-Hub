@@ -113,7 +113,6 @@ class Level:
 
             self.Player.update()
             self.offset=self.player.rect.center
-            debug(self.settings.current_game)
 
         else:
 

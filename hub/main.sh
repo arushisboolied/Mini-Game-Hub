@@ -176,4 +176,4 @@ while true; do
 done
 
 echo "Both users authenticated. Starting game..."
-python3 ./hub/main.py "$user1" "$user2"
+python3 ./hub/Menu.py "$user1" "$user2"

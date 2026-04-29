@@ -13,7 +13,7 @@ class Othello(Game):
     def __init__(self, game_name="Othello", players=("Player1", "Player2"), theme="medieval", Characters=(0, 1)):
 
         ##### Initialize the base Game class with the provided parameters #####
-        super().__init__(game_name, Resolution=(1280, 720), players=players, theme=theme, Characters=Characters)
+        super().__init__(game_name, players=players, theme=theme, Characters=Characters)
 
         ##### Create an 8x8 board initialized with -1 (indicating empty spaces) #####
         self.Board = np.full((8, 8), -1, dtype=int)

@@ -10,7 +10,7 @@ class Connect4(Game):
 
     def __init__(self,game_name="Connect4", players=("Mohit","Arush"), theme="medieval", Characters=(0,0)):
 
-        super().__init__(game_name,Resolution=(1280,720),players=players,theme=theme,Characters=Characters)
+        super().__init__(game_name,players=players,theme=theme,Characters=Characters)
 
         ##### Initialize the board as a 7x7 grid with empty cells represented by -1 #####
         self.Board=np.ones(49,dtype=int).reshape(7,7)*(-1)

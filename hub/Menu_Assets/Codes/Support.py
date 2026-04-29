@@ -60,7 +60,7 @@ Test_Map=[
 ['x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x']
 ]
 
-Theme_mapping={0: "medieval", 1: "futuristic", 2: "dune"}
+Theme_mapping={0: "Kingdom of \nHeaven", 1: "Blade Runner\n2049", 2: "Dune"}
 
 Interactive=[
 

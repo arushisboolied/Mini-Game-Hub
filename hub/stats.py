@@ -125,7 +125,7 @@ def graphs(wins, games):
 
 ######################### MAIN FUNCTION #########################
 
-def main():
+def stats_main():
     data = read_history()
     wins, games = stat_calculation(data)
     graphs(wins, games)
@@ -134,8 +134,8 @@ def main():
 
     ##### PYGAME WINDOW SETUP #####
 
-    WIDTH, HEIGHT = 800, 600
-    screen = pygame.display.set_mode((WIDTH, HEIGHT),pygame.RESIZABLE)
+    screen = pygame.display.get_surface()
+    WIDTH, HEIGHT= screen.get_size()
     pygame.display.set_caption("Leaderboard")
 
     ##### ASSETS #####
@@ -146,16 +146,16 @@ def main():
     new_btn = pygame.image.load("./hub/Assets/Images/NextGlow.png").convert_alpha()
 
     background = pygame.transform.scale(background, (WIDTH, HEIGHT))
-    histogram = pygame.transform.scale(histogram, (360, 230))
-    piechart = pygame.transform.scale(piechart, (180, 180))
+    histogram = pygame.transform.scale(histogram, (360*1280/800, 230*720/600))
+    piechart = pygame.transform.scale(piechart, (180*1280/800, 180*720/600))
 
-    new_btn = pygame.transform.scale(new_btn, (100,88))
+    new_btn = pygame.transform.scale(new_btn, (100*1280/800,88*720/600))
 
-    histogram_rect = histogram.get_rect(topleft=(120, 80))          
-    piechart_rect = piechart.get_rect(bottomright=(680, 450))      
+    histogram_rect = histogram.get_rect(topleft=(120*1280/800, 80*720/600))          
+    piechart_rect = piechart.get_rect(bottomright=(680*1280/800, 450*720/600))      
 
-    new_rect = new_btn.get_rect(topleft=(700,299))
-    col_rect = pygame.Rect(725,323,51,34)
+    new_rect = new_btn.get_rect(topleft=(700*1280/800,299*720/600))
+    col_rect = pygame.Rect(725*1280/800,323*720/600,51*1280/800,34*720/600)
 
     ##### MAIN LOOP #####
     
@@ -168,14 +168,11 @@ def main():
         
 
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
 
             ##### REDIRECTION EVENT HANDLER #####
 
-            elif event.type == pygame.MOUSEBUTTONDOWN:
+            if event.type == pygame.MOUSEBUTTONDOWN:
                 if new_rect.collidepoint(event.pos):
-                    subprocess.Popen(["python3", "./hub/Menu.py"])
                     running = False
 
             ##### HANDLE WINDOW RESIZE #####
@@ -209,8 +206,6 @@ def main():
                 screen.blit(bg_btn, new_rect)
         pygame.display.flip()
 
-    pygame.quit()
-    sys.exit()
 
 if __name__ == "__main__":
-    main()
+    stats_main()

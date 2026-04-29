@@ -179,7 +179,7 @@ class Settings:
             rect=self.game_title_image.get_rect(center=(Width/2,Height*0.09))
             self.display_surface.blit(self.game_title_image, rect)
 
-            Text=self.font.render("Leaderboard and Exit", True, "black")
+            Text=self.font.render("More Settings", True, "black")
             rect=Text.get_rect(center=(Width/2,Height*0.07))
             self.display_surface.blit(Text, rect)
 

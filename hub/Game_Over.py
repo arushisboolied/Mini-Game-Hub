@@ -5,7 +5,7 @@ import subprocess
 
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-COLUMNS = ["TIC TAC TOE","CONNECT 4","OTHELLO","ALL GAMES"]
+COLUMNS = ["Tictactoe","Connect4","Othello","ALL GAMES"]
 ROWS = ["WINS","LOSSES","W/L RATIO"]
 KEYS = ["1 1", "1 2", "1 3", "2 1", "2 2", "2 3", "3 1", "3 2", "3 3", "4 1", "4 2", "4 3"]
 
@@ -26,7 +26,7 @@ class Game_Over:
             pygame.init()
             pygame.font.init()
 
-        self.screen = pygame.display.set_mode((self.W, self.H), pygame.RESIZABLE)
+        self.screen = pygame.display.get_surface()
         pygame.display.set_caption("GAME OVER")
         self.clock  = pygame.time.Clock()
         self.load_assets()
@@ -141,11 +141,11 @@ class Game_Over:
         quit_hover = quit_rectangle.collidepoint(mx, my)
         pygame.draw.rect(self.screen,(40, 40, 40) if quit_hover else (10,10,10),quit_rectangle, border_radius=8)
         pygame.draw.rect(self.screen, (100, 100, 100), quit_rectangle, 1, border_radius=8)
-        quit_label = self.f_button.render("Quit", True, (235,230,220))
+        quit_label = self.f_button.render("Next", True, (235,230,220))
         self.screen.blit(quit_label, quit_label.get_rect(center=quit_rectangle.center))
 
     def call(self, key):
-        subprocess.run(["bash", "./hub/leaderboard.sh", "./hub/history.csv", "./hub/users.tsv",key[0], key[1], "TicTacToe", "Connect4", "Othello"], check = False)
+        subprocess.run(["bash", "./hub/leaderboard.sh", "./hub/history.csv", "./hub/users.tsv",key[:1], key[2:], "Tictactoe", "Connect4", "Othello"], check = False)
 
     def run(self):
 
@@ -154,11 +154,9 @@ class Game_Over:
             self.clock.tick(60)
 
             for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    sys.exit()
+            
 
-                elif event.type == pygame.VIDEORESIZE:
+                if event.type == pygame.VIDEORESIZE:
                     self.W, self.H = event.size
                     self.screen = pygame.display.set_mode((self.W, self.H), pygame.RESIZABLE)
 
@@ -171,18 +169,14 @@ class Game_Over:
                     if self.button_leaderboard.collidepoint(mx, my) and self.selection is not None:
                             key = KEYS[self.selection]
                             self.call(key)
-                            return key
                         
                     if self.button_quit.collidepoint(mx, my):
                             running = False
                 
                 elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:
-                        running = False
                     if event.key == pygame.K_RETURN and self.selection is not None:
                         key = KEYS[self.selection]
                         self.call(key)
-                        return key
             
             self.draw()
             pygame.display.flip()

@@ -6,11 +6,8 @@ import sys
 sys.path.append(os.path.join(os.path.dirname(__file__),'./Assets'))
 from Theme import Theme
 
-"""Things I need for a tictactoe game:
-1.Winning Screen
-"""
 class Game:
-    def __init__(self,game_name,Resolution=(1280,720),players=("Mohit","Arush"),theme="medieval",Characters=(0,1)):
+    def __init__(self,game_name,players=("Mohit","Arush"),theme="medieval",Characters=(0,1)):
         pygame.init()
         pygame.font.init()
         self.game_name=game_name
@@ -163,9 +160,7 @@ class Game:
             self.Resign()    
 
             for event in pygame.event.get():
-                if event.type==pygame.QUIT:
-                    self.running=False
-                elif event.type == pygame.VIDEORESIZE:    
+                if event.type == pygame.VIDEORESIZE:    
                     self.Resolution = event.size
                     self.screen = pygame.display.set_mode(self.Resolution, pygame.RESIZABLE)
                     self.generate_background()
@@ -180,4 +175,7 @@ class Game:
             
             self.generate_players()            
             pygame.display.update()
+
+            if self.running==False:
+                return self.tie,self.current_player
             

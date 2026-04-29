@@ -11,7 +11,7 @@ done
 
 x=$(cut -d ',' -f1,4 $1 | sort | uniq -c|awk '{print $1,$2}'|tr ' ' ','|tr -d '\r')
 y=$(cut -d ',' -f2,4 $1 | sort | uniq -c|awk '{print $1,$2}'|tr ' ' ','|tr -d '\r')
-Users=$(cut -d $'\t' -f1 "$2" | tail -n +2)   # use tab delimiter if it's a .tsv; skip header if any
+Users=$(cut -f1 "$2")   # use tab delimiter if it's a .tsv; skip header if any
 
 n=0
 while read -r line ; do
@@ -55,8 +55,8 @@ for ((i=0;i<n;i++)); do
     Final_stats[$i]="$user${Final_stats[$i]},$total_wins,$total_losses,$total_ratio"
 done
 
-criteria=$(($3))
-game_criteria=$(($4-1))
+criteria=$(($4))
+game_criteria=$(($3-1))
 actual_criteria=$(($game_criteria*3+$criteria+1))
 Games[$(($#-4))]="Total"
 echo ${Final_stats[@]}|tr ' ' '\n'|sort -t ',' -k${actual_criteria},${actual_criteria}rg -k1,1|awk -F',' 'BEGIN { OFS="," }

@@ -18,7 +18,7 @@ class Theme:
 
         # if elif block used to load only necessary resources for the selected theme and game, to save memory and loading time
         #Theme specific assets
-        if name == "medieval":
+        if name == "Kingdom of \nHeaven":
 
             #Background
             self.background=pygame.image.load(path("./Images/Connect4_medieval.png")).convert()
@@ -112,7 +112,7 @@ class Theme:
                 self.Counter_1_size=(200,100)
                 self.Counter_2_size=(200,100)
 
-        elif name == "futuristic":
+        elif name == "Blade Runner\n2049":
             #Background
             self.background=pygame.image.load(path("./Images/Connect4_Future.png")).convert()
 
@@ -204,7 +204,7 @@ class Theme:
                 self.Counter_1_size=(300,150)
                 self.Counter_2_size=(300,150)
 
-        elif name == "dune":
+        elif name == "Dune":
             #Background
             self.background=pygame.image.load(path("./Images/Connect4_Dune.png")).convert()
 
