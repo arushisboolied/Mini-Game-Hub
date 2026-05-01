@@ -18,7 +18,6 @@ class Game_Over:
         self.game_name = game_name
         self.history_csv = history_csv
         self.leaderboard_csv = leaderboard_csv
-        self.W, self.H = resolution
         self.cells = []
         self.selection = None
 
@@ -27,6 +26,7 @@ class Game_Over:
             pygame.font.init()
 
         self.screen = pygame.display.get_surface()
+        self.W, self.H = self.screen.get_size()
         pygame.display.set_caption("GAME OVER")
         self.clock  = pygame.time.Clock()
         self.load_assets()

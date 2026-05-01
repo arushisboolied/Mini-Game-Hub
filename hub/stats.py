@@ -146,16 +146,16 @@ def stats_main():
     new_btn = pygame.image.load("./hub/Assets/Images/NextGlow.png").convert_alpha()
 
     background = pygame.transform.scale(background, (WIDTH, HEIGHT))
-    histogram = pygame.transform.scale(histogram, (360*1280/800, 230*720/600))
-    piechart = pygame.transform.scale(piechart, (180*1280/800, 180*720/600))
+    histogram = pygame.transform.scale(histogram, (360*WIDTH/800, 230*HEIGHT/600))
+    piechart = pygame.transform.scale(piechart, (180*WIDTH/800, 180*HEIGHT/600))
 
-    new_btn = pygame.transform.scale(new_btn, (100*1280/800,88*720/600))
+    new_btn = pygame.transform.scale(new_btn, (100*WIDTH/800,88*HEIGHT/600))
 
-    histogram_rect = histogram.get_rect(topleft=(120*1280/800, 80*720/600))          
-    piechart_rect = piechart.get_rect(bottomright=(680*1280/800, 450*720/600))      
+    histogram_rect = histogram.get_rect(topleft=(120*WIDTH/800, 80*HEIGHT/600))          
+    piechart_rect = piechart.get_rect(bottomright=(680*WIDTH/800, 450*HEIGHT/600))      
 
-    new_rect = new_btn.get_rect(topleft=(700*1280/800,299*720/600))
-    col_rect = pygame.Rect(725*1280/800,323*720/600,51*1280/800,34*720/600)
+    new_rect = new_btn.get_rect(topleft=(700*WIDTH/800,299*HEIGHT/600))
+    col_rect = pygame.Rect(725*WIDTH/800,323*HEIGHT/600,51*WIDTH/800,34*HEIGHT/600)
 
     ##### MAIN LOOP #####
     
